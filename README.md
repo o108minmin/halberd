@@ -81,6 +81,8 @@ $ cat coefontstudio.srt
 
 ## TODO for 1.0.0
 
+- [ ] Use cli library(ex. [clap](https://github.com/clap-rs/clap) [seahorse](https://github.com/ksk001100/seahorse) )
+- [ ] Use logger
 - [ ] Refactor Error handling
 - [ ] Refactor names
 - [ ] Write unit tests
