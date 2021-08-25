@@ -6,25 +6,43 @@ use std::process;
 use std::time::Duration as StdDuration;
 
 use chrono::Duration;
+use clap::{crate_authors, crate_description, crate_version, App, Arg};
 
 use crate::softwaretalk::service;
 
-mod config;
 mod softwaretalk;
 mod srt;
 mod text;
 mod wav;
 
 fn main() {
-    let config = config::Config::new(env::args()).unwrap_or_else(|err| {
-        eprintln!("Problem parsing arguments: {}", err);
-        process::exit(1);
-    });
-    let swtp = service::select_software_talk(&config.softwaretalk_type).unwrap_or_else(|err| {
-        eprintln!("Problem selecting software talk: {}", err);
-        process::exit(1);
-    });
-    let files = fs::read_dir(config.dirname).unwrap_or_else(|err| {
+    let matches = App::new("halberd")
+        .version(crate_version!())
+        .author(crate_authors!())
+        .about(crate_description!())
+        .license("MIT")
+        .arg(
+            Arg::new("SoftwareTalkType")
+                .about("Set a SoftwareTalkType")
+                .required(true)
+                .possible_values(&["voiceroid", "coefontstudio"])
+                .index(1),
+        )
+        .arg(
+            Arg::new("Input")
+                .about("input directory")
+                .required(false)
+                .default_value("./")
+                .index(2),
+        )
+        .get_matches();
+
+    let swtp = service::select_software_talk(matches.value_of("SoftwareTalkType").unwrap())
+        .unwrap_or_else(|err| {
+            eprintln!("Problem selecting software talk: {}", err);
+            process::exit(1);
+        });
+    let files = fs::read_dir(matches.value_of("Input").unwrap()).unwrap_or_else(|err| {
         eprintln!("Problem reading directory: {}", err);
         process::exit(1);
     });
