@@ -7,7 +7,7 @@ use std::time::Duration as StdDuration;
 
 use chrono::Duration;
 use clap::{crate_authors, crate_description, crate_version, App, Arg};
-use env_logger::Env;
+
 use env_logger::Builder;
 use log::LevelFilter;
 
@@ -49,18 +49,19 @@ fn main() {
                 .required(false)
         )
         .get_matches();
-    
+
     let mut builder = Builder::from_default_env();
     let level = match matches.is_present("debug") {
         false => LevelFilter::Error,
         true => LevelFilter::Debug,
     };
-    builder
-        .filter_level(level)
-        .init();
+    builder.filter_level(level).init();
     info!("start halberd");
     info!("enable debug mode: {}", matches.is_present("debug"));
-    info!("input SoftwareTalkType: {}", matches.value_of("SoftwareTalkType").unwrap());
+    info!(
+        "input SoftwareTalkType: {}",
+        matches.value_of("SoftwareTalkType").unwrap()
+    );
     let swtp = service::select_software_talk(matches.value_of("SoftwareTalkType").unwrap())
         .unwrap_or_else(|err| {
             error!("Problem selecting software talk: {}", err);
@@ -90,7 +91,7 @@ fn main() {
             &reader,
         )))
         .unwrap_or_else(|err| {
-            error!("Problem calculate wav file seconds: {}", err);
+            error!("Problem calculating wav file seconds: {}", err);
             process::exit(1);
         });
         sub_rips.push(srt::UnitSubRip {
@@ -98,6 +99,9 @@ fn main() {
             serif: serif.to_string(),
         })
     }
-    srt::print_srt(sub_rips);
+    srt::print_srt(sub_rips).unwrap_or_else(|err| {
+        error!("Problem printing subtitles: {}", err);
+        process::exit(1);
+    });
     info!("end halberd");
 }

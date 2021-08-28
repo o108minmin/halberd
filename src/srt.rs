@@ -1,4 +1,8 @@
+use std::boxed::Box;
+use std::error::Error;
 use std::fmt;
+use std::io::{stdout, Write};
+use std::result::Result;
 
 use chrono::prelude::*;
 use chrono::Duration;
@@ -15,21 +19,27 @@ impl fmt::Display for UnitSubRip {
     }
 }
 
-pub fn print_srt(vec: Vec<UnitSubRip>) {
+pub fn print_srt(vec: Vec<UnitSubRip>) -> Result<(), Box<dyn Error>> {
     let mut cursor = Utc.timestamp(0, 0);
     let mut counter = 1;
     info!("Print UnitSubRips");
     debug!("input vec length: {}", vec.len());
+    let out = stdout();
+    let mut handle = out.lock();
     for i in vec.iter() {
-        println!("{}", counter);
-        println!(
+        info!("{}", i);
+        writeln!(handle, "{}", counter)?;
+        writeln!(
+            handle,
             "{} --> {}",
             cursor.format("%H:%M:%S,%3f"),
             (cursor + i.duration).format("%H:%M:%S,%3f")
-        );
-        println!("{}", i.serif);
-        println!();
+        )?;
+        writeln!(handle, "{}", i.serif)?;
+        writeln!(handle)?;
         cursor = cursor + i.duration;
         counter += 1;
     }
+    handle.flush()?;
+    Ok(())
 }
