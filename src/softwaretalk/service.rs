@@ -5,11 +5,10 @@ use crate::softwaretalk::voiceroid::Voiceroid;
 pub fn select_software_talk(
     profile_name: &str,
 ) -> Result<Box<dyn profile::SoftwareTalk>, &'static str> {
-    if profile_name == "voiceroid" {
-        Ok(Box::new(Voiceroid {}))
-    } else if profile_name == "coefontstudio" {
-        Ok(Box::new(CoeFontStudio {}))
-    } else {
-        Err("Didn't match profile name")
+    info!("input profile_name: {}", profile_name);
+    match profile_name {
+        "voiceroid" => Ok(Box::new(Voiceroid {})),
+        "coefontstudio" => Ok(Box::new(CoeFontStudio {})),
+        _ => Err("Didn't match profile name {}"),
     }
 }

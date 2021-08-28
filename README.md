@@ -82,7 +82,7 @@ $ cat coefontstudio.srt
 ## TODO for 1.0.0
 
 - [x] Use cli library([clap](https://github.com/clap-rs/clap))
-- [ ] Use logger
+- [x] Use logger
 - [ ] Refactor Error handling
 - [ ] Refactor names
 - [ ] Write unit tests
