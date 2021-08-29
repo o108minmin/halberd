@@ -6,4 +6,5 @@ pub trait SoftwareTalk {
         &self,
         reader: &hound::WavReader<std::io::BufReader<std::fs::File>>,
     ) -> f64;
+    fn get_profile_name(&self) -> &'static str;
 }

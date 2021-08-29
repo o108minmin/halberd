@@ -1,3 +1,4 @@
+use std::fmt;
 use std::path::PathBuf;
 
 use crate::softwaretalk;
@@ -15,5 +16,14 @@ impl softwaretalk::profile::SoftwareTalk for Voiceroid {
         reader: &hound::WavReader<std::io::BufReader<std::fs::File>>,
     ) -> f64 {
         wav::calculate_wave_seconds(reader)
+    }
+    fn get_profile_name(&self) -> &'static str {
+        "voiceroid"
+    }
+}
+
+impl fmt::Display for Voiceroid {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "voiceroid")
     }
 }

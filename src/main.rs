@@ -75,13 +75,11 @@ fn main() {
 
 pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
     info!("start halberd");
-    info!(
-        "input SoftwareTalk: {}", &config.softwaretalk);
-    let swtp = service::select_software_talk(&config.softwaretalk)
-        .unwrap_or_else(|err| {
-            error!("Problem selecting software talk: {}", err);
-            process::exit(1);
-        });
+    info!("input SoftwareTalk: {}", &config.softwaretalk);
+    let swtp = service::select_software_talk(&config.softwaretalk).unwrap_or_else(|err| {
+        error!("Problem selecting software talk: {}", err);
+        process::exit(1);
+    });
     info!("input directory: {}", &config.dirname);
     let dir = fs::read_dir(&config.dirname).unwrap_or_else(|err| {
         error!("Problem reading directory: {}", err);
@@ -95,9 +93,9 @@ pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
     for wav in wavs {
         let serif = swtp.serif_generator(wav.path())?;
         let reader = hound::WavReader::open(wav.path())?;
-        let duration = Duration::from_std(StdDuration::from_secs_f64(wav::calculate_wave_seconds(
-            &reader,
-        )))?;
+        let duration = Duration::from_std(StdDuration::from_secs_f64(
+            wav::calculate_wave_seconds(&reader),
+        ))?;
         sub_rips.push(srt::UnitSubRip {
             duration,
             serif: serif.to_string(),

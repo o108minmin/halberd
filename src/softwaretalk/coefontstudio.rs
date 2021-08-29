@@ -16,4 +16,7 @@ impl softwaretalk::profile::SoftwareTalk for CoeFontStudio {
     ) -> f64 {
         wav::calculate_wave_seconds(reader)
     }
+    fn get_profile_name(&self) -> &'static str {
+        "coefontstudio"
+    }
 }
