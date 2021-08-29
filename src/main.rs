@@ -36,7 +36,7 @@ fn main() {
                 .index(1),
         )
         .arg(
-            Arg::new("Input")
+            Arg::new("INPUT")
                 .about("input directory")
                 .required(false)
                 .default_value("./")
@@ -45,8 +45,9 @@ fn main() {
         .arg(
             Arg::new("debug")
                 .short('d')
+                .long("debug")
                 .about("Print debug level log")
-                .required(false)
+                .required(false),
         )
         .get_matches();
 
@@ -67,8 +68,8 @@ fn main() {
             error!("Problem selecting software talk: {}", err);
             process::exit(1);
         });
-    info!("input directory: {}", matches.value_of("Input").unwrap());
-    let files = fs::read_dir(matches.value_of("Input").unwrap()).unwrap_or_else(|err| {
+    info!("input directory: {}", matches.value_of("INPUT").unwrap());
+    let files = fs::read_dir(matches.value_of("INPUT").unwrap()).unwrap_or_else(|err| {
         error!("Problem reading directory: {}", err);
         process::exit(1);
     });
