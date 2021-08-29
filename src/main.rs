@@ -1,4 +1,6 @@
+use std::boxed::Box;
 use std::env;
+use std::error::Error;
 use std::ffi::OsStr;
 use std::fs;
 use std::os::unix::ffi::OsStrExt;
@@ -11,9 +13,9 @@ use clap::{crate_authors, crate_description, crate_version, App, Arg};
 use env_logger::Builder;
 use log::LevelFilter;
 
-
 use crate::softwaretalk::service;
 
+mod config;
 mod softwaretalk;
 mod srt;
 mod text;
@@ -57,52 +59,51 @@ fn main() {
         true => LevelFilter::Debug,
     };
     builder.filter_level(level).init();
-    info!("start halberd");
+    info!("create halberd config");
     info!("enable debug mode: {}", matches.is_present("debug"));
+    info!("build config");
+    let config = config::Config {
+        softwaretalk: matches.value_of("SoftwareTalkType").unwrap().to_string(),
+        dirname: matches.value_of("INPUT").unwrap().to_string(),
+    };
+    info!("{}", config);
+    run(config).unwrap_or_else(|err| {
+        error!("Problem running halberd: {}", err);
+        process::exit(1);
+    });
+}
+
+pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
+    info!("start halberd");
     info!(
-        "input SoftwareTalkType: {}",
-        matches.value_of("SoftwareTalkType").unwrap()
-    );
-    let swtp = service::select_software_talk(matches.value_of("SoftwareTalkType").unwrap())
+        "input SoftwareTalk: {}", &config.softwaretalk);
+    let swtp = service::select_software_talk(&config.softwaretalk)
         .unwrap_or_else(|err| {
             error!("Problem selecting software talk: {}", err);
             process::exit(1);
         });
-    info!("input directory: {}", matches.value_of("INPUT").unwrap());
-    let files = fs::read_dir(matches.value_of("INPUT").unwrap()).unwrap_or_else(|err| {
+    info!("input directory: {}", &config.dirname);
+    let dir = fs::read_dir(&config.dirname).unwrap_or_else(|err| {
         error!("Problem reading directory: {}", err);
         process::exit(1);
     });
-
     let mut sub_rips = vec![];
 
-    let wavs = files
+    let wavs = dir
         .filter_map(Result::ok)
         .filter(|d| d.path().extension() == Some(OsStr::from_bytes(b"wav")));
     for wav in wavs {
-        let serif = swtp.serif_generator(wav.path()).unwrap_or_else(|err| {
-            error!("Problem generating serif: {}", err);
-            process::exit(1);
-        });
-        let reader = hound::WavReader::open(wav.path()).unwrap_or_else(|err| {
-            error!("Problem opening wav file: {}", err);
-            process::exit(1);
-        });
+        let serif = swtp.serif_generator(wav.path())?;
+        let reader = hound::WavReader::open(wav.path())?;
         let duration = Duration::from_std(StdDuration::from_secs_f64(wav::calculate_wave_seconds(
             &reader,
-        )))
-        .unwrap_or_else(|err| {
-            error!("Problem calculating wav file seconds: {}", err);
-            process::exit(1);
-        });
+        )))?;
         sub_rips.push(srt::UnitSubRip {
             duration,
             serif: serif.to_string(),
         })
     }
-    srt::print_srt(sub_rips).unwrap_or_else(|err| {
-        error!("Problem printing subtitles: {}", err);
-        process::exit(1);
-    });
+    srt::print_srt(sub_rips)?;
     info!("end halberd");
+    Ok(())
 }
