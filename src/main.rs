@@ -1,3 +1,6 @@
+use clap::{crate_authors, crate_description, crate_version, App, Arg};
+use env_logger::Builder;
+use log::LevelFilter;
 use std::boxed::Box;
 use std::env;
 use std::error::Error;
@@ -8,18 +11,14 @@ use std::process;
 use std::time::Duration as StdDuration;
 
 use chrono::Duration;
-use clap::{crate_authors, crate_description, crate_version, App, Arg};
-
-use env_logger::Builder;
-use log::LevelFilter;
 
 use crate::softwaretalk::service;
 
-mod config;
-mod softwaretalk;
-mod srt;
-mod text;
-mod wav;
+pub mod config;
+pub mod softwaretalk;
+pub mod srt;
+pub mod text;
+pub mod wav;
 
 #[macro_use]
 extern crate log;
@@ -90,9 +89,9 @@ pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
     let wavs = dir
         .filter_map(Result::ok)
         .filter(|d| d.path().extension() == Some(OsStr::from_bytes(b"wav")));
-    for wav in wavs {
-        let serif = swtp.serif_generator(wav.path())?;
-        let reader = hound::WavReader::open(wav.path())?;
+    for w in wavs {
+        let serif = swtp.serif_generator(w.path())?;
+        let reader = hound::WavReader::open(w.path())?;
         let duration = Duration::from_std(StdDuration::from_secs_f64(
             wav::calculate_wave_seconds(&reader),
         ))?;
