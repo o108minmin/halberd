@@ -6,6 +6,7 @@ use std::env;
 use std::error::Error;
 use std::ffi::OsStr;
 use std::fs;
+use std::io::stdout;
 use std::os::unix::ffi::OsStrExt;
 use std::process;
 use std::time::Duration as StdDuration;
@@ -100,7 +101,9 @@ pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
             serif: serif.to_string(),
         })
     }
-    srt::print_srt(sub_rips)?;
+    let out = stdout();
+    let mut handle = out.lock();
+    srt::output_srt(&mut handle, sub_rips)?;
     info!("end halberd");
     Ok(())
 }
