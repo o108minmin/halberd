@@ -1,3 +1,4 @@
+use std::error::Error;
 use std::fmt;
 use std::path::PathBuf;
 
@@ -8,7 +9,7 @@ use crate::wav;
 pub struct Voiceroid {}
 
 impl softwaretalk::profile::SoftwareTalk for Voiceroid {
-    fn serif_generator(&self, path: PathBuf) -> Result<String, &'static str> {
+    fn serif_generator(&self, path: PathBuf) -> Result<String, Box<dyn Error>> {
         text::generate_subtitle_from_same_name_txt_shift_jis(path)
     }
     fn wave_time_generator(
