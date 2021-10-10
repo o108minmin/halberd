@@ -21,7 +21,7 @@ fn error_required_software_talk_type() -> Result<(), Box<dyn std::error::Error>>
     assert
         .failure()
         .stderr(predicate::str::contains("The following required arguments"))
-        .stderr(predicate::str::contains("SoftwareTalkType"));
+        .stderr(predicate::str::contains("TextToSpeechType"));
     Ok(())
 }
 
@@ -32,7 +32,7 @@ fn error_invalid_software_talk_type() -> Result<(), Box<dyn std::error::Error>> 
     assert
         .failure()
         .stderr(predicate::str::contains("isn't a valid value for"))
-        .stderr(predicate::str::contains("SoftwareTalkType"));
+        .stderr(predicate::str::contains("TextToSpeechType"));
     Ok(())
 }
 
