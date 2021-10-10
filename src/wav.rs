@@ -20,7 +20,6 @@ mod tests {
     fn normal() {
         let dir = tempdir().unwrap();
         let input = dir.path().join("test.wav");
-        println!("{:?}", input);
         let spec = hound::WavSpec {
             channels: 1,
             sample_rate: 44100,

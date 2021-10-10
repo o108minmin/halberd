@@ -8,6 +8,7 @@ use std::ffi::OsStr;
 use std::fs;
 use std::io::stdout;
 use std::os::unix::ffi::OsStrExt;
+use std::path::PathBuf;
 use std::process;
 use std::time::Duration as StdDuration;
 
@@ -89,10 +90,19 @@ pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
 
     let wavs = dir
         .filter_map(Result::ok)
-        .filter(|d| d.path().extension() == Some(OsStr::from_bytes(b"wav")));
+        .filter(|d| d.path().extension() == Some(OsStr::from_bytes(b"wav")))
+        .collect::<Vec<_>>();
+    
+    let mut file_names = vec![];
     for w in wavs {
-        let serif = swtp.serif_generator(w.path())?;
-        let reader = hound::WavReader::open(w.path())?;
+        let tmp = w.path();
+        file_names.push(tmp);
+    }
+    file_names.sort();
+
+    for f in file_names.iter() {
+        let serif = swtp.serif_generator(PathBuf::from(&f))?;
+        let reader = hound::WavReader::open(PathBuf::from(&f))?;
         let duration = Duration::from_std(StdDuration::from_secs_f64(
             wav::calculate_wave_seconds(&reader),
         ))?;
