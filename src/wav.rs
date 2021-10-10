@@ -12,10 +12,33 @@ pub fn calculate_wave_seconds(reader: &hound::WavReader<std::io::BufReader<std::
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::f32::consts::PI;
+
+    use tempfile::tempdir;
 
     #[test]
     fn normal() {
-        let input = hound::WavReader::open("tests/data/wav/dummy.wav").unwrap();
-        assert!(5.1 >= calculate_wave_seconds(&input) && calculate_wave_seconds(&input) >= 5.0)
+        let dir = tempdir().unwrap();
+        let input = dir.path().join("test.wav");
+        println!("{:?}", input);
+        let spec = hound::WavSpec {
+            channels: 1,
+            sample_rate: 44100,
+            bits_per_sample: 16,
+            sample_format: hound::SampleFormat::Int,
+        };
+        let mut writer = hound::WavWriter::create(&input, spec).unwrap();
+        let expected = 5;
+        for t in (0 .. 44100*expected).map(|x| x as f32 / 44100.0) {
+            let sample = (t * 440.0 * 2.0 * PI).sin();
+            let amplitude = i16::MAX as f32;
+            writer.write_sample((sample * amplitude) as i16).unwrap();
+        }
+        writer.finalize().unwrap();
+        let input_path = hound::WavReader::open(input.to_str().unwrap()).unwrap();
+        let result = calculate_wave_seconds(&input_path);
+        assert_eq!(result, expected as f64);
+        drop(input);
+        dir.close().unwrap();
     }
 }

@@ -11,7 +11,7 @@ struct TextError(String);
 
 impl fmt::Display for TextError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "SrtError: {}", self.0)
+        write!(f, "TextError: {}", self.0)
     }
 }
 

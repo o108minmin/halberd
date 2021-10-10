@@ -52,6 +52,7 @@ pub fn output_srt<W: Write>(w: &mut W ,vec: Vec<UnitSubRip>) -> Result<(), Box<d
             return Err(Box::new(SrtError("invalid duration: duration must be positive".into())))
         }
         counter += 1;
+        cursor = cursor + Duration::milliseconds(1);
     }
     w.flush()?;
     Ok(())
