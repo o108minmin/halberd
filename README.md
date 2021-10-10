@@ -86,5 +86,5 @@ $ cat coefontstudio.srt
 - [x] Refactor Error handling
 - [x] Refactor names
 - [x] Write unit tests
-- [ ] Write integration tests
+- [x] Write integration tests
 - [ ] Write documents

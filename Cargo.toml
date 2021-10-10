@@ -18,6 +18,6 @@ log = "0.4.14"
 env_logger = "0.8.4"
 
 [dev-dependencies]
-assert_cmd = "0.10"
-predicates = "1"
+assert_cmd = "2.0.2"
+predicates = "2.0.3"
 tempfile = "3"
