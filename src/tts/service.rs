@@ -1,10 +1,10 @@
-use crate::softwaretalk::coefontstudio::CoeFontStudio;
-use crate::softwaretalk::profile;
-use crate::softwaretalk::voiceroid::Voiceroid;
+use crate::tts::coefontstudio::CoeFontStudio;
+use crate::tts::profile;
+use crate::tts::voiceroid::Voiceroid;
 
-pub fn select_software_talk(
+pub fn select_tts_talk(
     profile_name: &str,
-) -> Result<Box<dyn profile::SoftwareTalk>, &'static str> {
+) -> Result<Box<dyn profile::TTS>, &'static str> {
     info!("input profile_name: {}", profile_name);
     match profile_name {
         "voiceroid" => Ok(Box::new(Voiceroid {})),
@@ -21,7 +21,7 @@ mod tests {
     fn normal_select_voiceroid() {
         let input = "voiceroid";
         let expected = "voiceroid";
-        let result = select_software_talk(input).unwrap();
+        let result = select_tts_talk(input).unwrap();
         assert_eq!(result.get_profile_name(), expected);
     }
 
@@ -29,7 +29,7 @@ mod tests {
     fn normal_select_coefontstudio() {
         let input = "coefontstudio";
         let expected = "coefontstudio";
-        let result = select_software_talk(input).unwrap();
+        let result = select_tts_talk(input).unwrap();
         assert_eq!(result.get_profile_name(), expected);
     }
 
@@ -38,7 +38,7 @@ mod tests {
     fn error_not_found() {
         // TODO: エラーメッセージを使ったテストにする
         let input = "sample";
-        match select_software_talk(input) {
+        match select_tts_talk(input) {
             Ok(s) => s,
             Err(e) => panic!("{}", e),
         };

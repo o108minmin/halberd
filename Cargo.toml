@@ -5,7 +5,7 @@ edition = "2018"
 authors = [
 	"o108minmin <o108minmin@gmail.com>",
 ]
-description = "Generate Software Talk Subtitle"
+description = "Generate Text To Speech Software Subtitle"
 repository = "https://github.com/o108minmin/halberd"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

@@ -15,24 +15,24 @@ fn normal_empty_directory() -> Result<(), Box<dyn std::error::Error>>  {
 }
 
 #[test]
-fn error_required_software_talk_type() -> Result<(), Box<dyn std::error::Error>>  {
+fn error_required_tts_talk_type() -> Result<(), Box<dyn std::error::Error>>  {
     let mut cmd = Command::cargo_bin("halberd").unwrap();
     let assert = cmd.assert();
     assert
         .failure()
         .stderr(predicate::str::contains("The following required arguments"))
-        .stderr(predicate::str::contains("TextToSpeechType"));
+        .stderr(predicate::str::contains("TTSType"));
     Ok(())
 }
 
 #[test]
-fn error_invalid_software_talk_type() -> Result<(), Box<dyn std::error::Error>>  {
+fn error_invalid_tts_talk_type() -> Result<(), Box<dyn std::error::Error>>  {
     let mut cmd = Command::cargo_bin("halberd").unwrap();
     let assert = cmd.arg("sample").assert();
     assert
         .failure()
         .stderr(predicate::str::contains("isn't a valid value for"))
-        .stderr(predicate::str::contains("TextToSpeechType"));
+        .stderr(predicate::str::contains("TTS"));
     Ok(())
 }
 

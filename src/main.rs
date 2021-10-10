@@ -14,10 +14,10 @@ use std::time::Duration as StdDuration;
 
 use chrono::Duration;
 
-use crate::softwaretalk::service;
+use crate::tts::service;
 
 pub mod config;
-pub mod softwaretalk;
+pub mod tts;
 pub mod srt;
 pub mod text;
 pub mod wav;
@@ -32,8 +32,8 @@ fn main() {
         .about(crate_description!())
         .license("MIT")
         .arg(
-            Arg::new("SoftwareTalkType")
-                .about("Set a SoftwareTalkType")
+            Arg::new("TTSType")
+                .about("Set a TTSType")
                 .required(true)
                 .possible_values(&["voiceroid", "coefontstudio"])
                 .index(1),
@@ -64,7 +64,7 @@ fn main() {
     info!("enable debug mode: {}", matches.is_present("debug"));
     info!("build config");
     let config = config::Config {
-        softwaretalk: matches.value_of("SoftwareTalkType").unwrap().to_string(),
+        tts: matches.value_of("TTSType").unwrap().to_string(),
         dirname: matches.value_of("INPUT").unwrap().to_string(),
     };
     info!("{}", config);
@@ -76,9 +76,9 @@ fn main() {
 
 pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
     info!("start halberd");
-    info!("input SoftwareTalk: {}", &config.softwaretalk);
-    let swtp = service::select_software_talk(&config.softwaretalk).unwrap_or_else(|err| {
-        error!("Problem selecting software talk: {}", err);
+    info!("input TTS: {}", &config.tts);
+    let swtp = service::select_tts_talk(&config.tts).unwrap_or_else(|err| {
+        error!("Problem selecting tts talk: {}", err);
         process::exit(1);
     });
     info!("input directory: {}", &config.dirname);

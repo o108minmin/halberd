@@ -1,6 +1,6 @@
 # halberd
 
-halberd is Software Talk Subtitle Generator.
+halberd is Text To Speech Software Subtitle Generator.
 
 ## poc
 
