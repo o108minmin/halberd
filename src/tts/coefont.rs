@@ -1,4 +1,4 @@
-//! CoeFontStudio関係のモジュール
+//! CoeFont関係のモジュール
 use std::error::Error;
 use std::path::PathBuf;
 
@@ -6,9 +6,9 @@ use crate::tts;
 use crate::text;
 use crate::wav;
 
-pub struct CoeFontStudio {}
+pub struct CoeFont {}
 
-impl tts::profile::TTS for CoeFontStudio {
+impl tts::profile::TTS for CoeFont {
     fn serif_generator(&self, path: PathBuf) -> Result<String, Box<dyn Error>> {
         text::generate_subtitle_from_same_name_txt(path)
     }
@@ -19,6 +19,6 @@ impl tts::profile::TTS for CoeFontStudio {
         wav::calculate_wave_seconds(reader)
     }
     fn get_profile_name(&self) -> &'static str {
-        "coefontstudio"
+        "coefont"
     }
 }

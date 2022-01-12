@@ -36,7 +36,7 @@ fn main() {
             Arg::new("TTSType")
                 .about("Set a TTSType")
                 .required(true)
-                .possible_values(&["voiceroid", "coefontstudio"])
+                .possible_values(&["voiceroid", "coefont"])
                 .index(1),
         )
         .arg(

@@ -45,15 +45,15 @@ $ cat voiceroid.srt
 ### coefont studio
 
 ```bash
-$ ls coefontstudio/
+$ ls coefont/
 20210815-0108_Allial_わたしわあ.txt  20210815-0108_Allial_わたしわあ.wav  20210815-0118_Allial_こんにちわ.txt  20210815-0118_Allial_こんにちわ.wav
-$ cat coefontstudio/20210815-0108_Allial_わたしわあ.txt
+$ cat coefont/20210815-0108_Allial_わたしわあ.txt
 私はアリアルです。よろしくお願いします。
-$ cat coefontstudio/20210815-0118_Allial_こんにちわ.txt
+$ cat coefont/20210815-0118_Allial_こんにちわ.txt
 こんにちわ
-$ cargo run coefontstudio coefontstudio/
+$ cargo run coefont coefont/
     Finished dev [unoptimized + debuginfo] target(s) in 0.00s
-     Running `target/debug/halberd coefontstudio coefontstudio/`
+     Running `target/debug/halberd coefont coefont/`
 1
 00:00:00,000 --> 00:00:00,975
 こんにちわ
@@ -66,10 +66,10 @@ $ cargo run coefontstudio coefontstudio/
 ```bash
 # Generate srt file
 
-$ cargo run coefontstudio coefontstudio/ > coefontstudio.srt
+$ cargo run coefont coefont/ > coefont.srt
     Finished dev [unoptimized + debuginfo] target(s) in 0.00s
-     Running `target/debug/halberd coefontstudio coefontstudio/`
-$ cat coefontstudio.srt
+     Running `target/debug/halberd coefont coefont/`
+$ cat coefont.srt
 1
 00:00:00,000 --> 00:00:00,975
 こんにちわ
@@ -87,4 +87,4 @@ $ cat coefontstudio.srt
 - [x] Refactor names
 - [x] Write unit tests
 - [x] Write integration tests
-- [ ] Write documents
+- [x] Write documents

@@ -1,5 +1,5 @@
 //! TTS関係の雑多な関数
-use crate::tts::coefontstudio::CoeFontStudio;
+use crate::tts::coefont::CoeFont;
 use crate::tts::profile;
 use crate::tts::voiceroid::Voiceroid;
 
@@ -11,7 +11,7 @@ pub fn select_tts_talk(
     info!("input profile_name: {}", profile_name);
     match profile_name {
         "voiceroid" => Ok(Box::new(Voiceroid {})),
-        "coefontstudio" => Ok(Box::new(CoeFontStudio {})),
+        "coefont" => Ok(Box::new(CoeFont {})),
         _ => Err("Didn't match profile name"),
     }
 }
@@ -30,10 +30,10 @@ mod tests {
     }
 
     #[test]
-    // 入力値が正常だったとき(入力値がcoefontstudio)
-    fn normal_select_coefontstudio() {
-        let input = "coefontstudio";
-        let expected = "coefontstudio";
+    // 入力値が正常だったとき(入力値がcoefont)
+    fn normal_select_coefont() {
+        let input = "coefont";
+        let expected = "coefont";
         let result = select_tts_talk(input).unwrap();
         assert_eq!(result.get_profile_name(), expected);
     }
