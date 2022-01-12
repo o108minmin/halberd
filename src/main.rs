@@ -1,5 +1,5 @@
 //! cli gateway for halberd.
-use clap::{crate_authors, crate_description, crate_version, App, Arg};
+use clap::{App, Arg};
 use env_logger::Builder;
 use log::LevelFilter;
 use std::boxed::Box;
@@ -28,20 +28,20 @@ extern crate log;
 /// cli gatewayとしてのmain関数
 fn main() {
     let matches = App::new("halberd")
-        .version(crate_version!())
-        .author(crate_authors!())
-        .about(crate_description!())
-        .license("MIT")
+        .bin_name(env!("CARGO_BIN_NAME"))
+        .version(env!("CARGO_PKG_VERSION"))
+        .about(env!("CARGO_PKG_DESCRIPTION"))
+        .after_long_help(env!("CARGO_PKG_LICENSE"))
         .arg(
             Arg::new("TTSType")
-                .about("Set a TTSType")
+                .help("set TTSType")
                 .required(true)
                 .possible_values(&["voiceroid", "coefont"])
                 .index(1),
         )
         .arg(
             Arg::new("INPUT")
-                .about("input directory")
+                .help("input directory")
                 .required(false)
                 .default_value("./")
                 .index(2),
@@ -50,7 +50,7 @@ fn main() {
             Arg::new("debug")
                 .short('d')
                 .long("debug")
-                .about("Print debug level log")
+                .help("Print debug level log")
                 .required(false),
         )
         .get_matches();
