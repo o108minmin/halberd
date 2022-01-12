@@ -1,3 +1,4 @@
+//! CoeFontStudio関係のモジュール
 use std::error::Error;
 use std::path::PathBuf;
 

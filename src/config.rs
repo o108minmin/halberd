@@ -1,5 +1,9 @@
+//! config関連のモジュール
 use std::fmt::{Display, Formatter, Result};
 
+/// Config
+/// * `tts` - Text To Speech の種類
+/// * `dirname` - 対象のディレクトリ
 pub struct Config {
     pub tts: String,
     pub dirname: String,

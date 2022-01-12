@@ -1,3 +1,4 @@
+//! cli gateway for halberd.
 use clap::{crate_authors, crate_description, crate_version, App, Arg};
 use env_logger::Builder;
 use log::LevelFilter;
@@ -24,7 +25,7 @@ pub mod wav;
 
 #[macro_use]
 extern crate log;
-
+/// cli gatewayとしてのmain関数
 fn main() {
     let matches = App::new("halberd")
         .version(crate_version!())
@@ -74,6 +75,7 @@ fn main() {
     });
 }
 
+/// Configを元にhalberdを実行する
 pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
     info!("start halberd");
     info!("input TTS: {}", &config.tts);

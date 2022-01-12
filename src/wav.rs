@@ -1,3 +1,6 @@
+//! wavファイル関係のモジュール
+/// wavファイルの秒数を計算する
+/// * `reader` - 秒数を計算したいhoundのwav reader.
 pub fn calculate_wave_seconds(reader: &hound::WavReader<std::io::BufReader<std::fs::File>>) -> f64 {
     debug!("input duration: {}", reader.duration());
     debug!("input sampling rate: {}", reader.spec().sample_rate);
@@ -17,6 +20,7 @@ mod tests {
     use tempfile::tempdir;
 
     #[test]
+    /// 入力値が正常だったとき
     fn normal() {
         let dir = tempdir().unwrap();
         let input = dir.path().join("test.wav");

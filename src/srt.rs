@@ -1,3 +1,4 @@
+//! srtファイル関係のモジュール
 use std::boxed::Box;
 use std::error::Error;
 use std::fmt;
@@ -30,6 +31,7 @@ impl fmt::Display for SrtError {
 
 impl Error for SrtError {}
 
+/// 引数wに対して、vecをstrファイルとして出力する
 pub fn output_srt<W: Write>(w: &mut W ,vec: Vec<UnitSubRip>) -> Result<(), Box<dyn Error>> {
     let mut cursor = Utc.timestamp(0, 0);
     let mut counter = 1;
@@ -62,6 +64,7 @@ pub fn output_srt<W: Write>(w: &mut W ,vec: Vec<UnitSubRip>) -> Result<(), Box<d
 mod tests {
     use super::*;
     #[test]
+    // 入力値が正常だったとき
     fn normal_output_srt() {
         let mut buf = Vec::<u8>::new();
         let mut input = Vec::<UnitSubRip>::new();
@@ -76,6 +79,7 @@ mod tests {
     }
 
     #[test]
+    // 不正な値(負の値)が入る
     fn error_invalid_duration() {
         let mut buf = Vec::<u8>::new();
         let mut input = Vec::<UnitSubRip>::new();
