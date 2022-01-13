@@ -5,10 +5,8 @@ use log::LevelFilter;
 use std::boxed::Box;
 use std::env;
 use std::error::Error;
-use std::ffi::OsStr;
 use std::fs;
 use std::io::stdout;
-use std::os::unix::ffi::OsStrExt;
 use std::path::PathBuf;
 use std::process;
 use std::time::Duration as StdDuration;
@@ -33,8 +31,8 @@ fn main() {
         .about(env!("CARGO_PKG_DESCRIPTION"))
         .after_long_help(env!("CARGO_PKG_LICENSE"))
         .arg(
-            Arg::new("TTSType")
-                .help("set TTSType")
+            Arg::new("TTS")
+                .help("set TTS")
                 .required(true)
                 .possible_values(&["voiceroid", "coefont"])
                 .index(1),
@@ -65,7 +63,7 @@ fn main() {
     info!("enable debug mode: {}", matches.is_present("debug"));
     info!("build config");
     let config = config::Config {
-        tts: matches.value_of("TTSType").unwrap().to_string(),
+        tts: matches.value_of("TTS").unwrap().to_string(),
         dirname: matches.value_of("INPUT").unwrap().to_string(),
     };
     info!("{}", config);
@@ -92,7 +90,7 @@ pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
 
     let wavs = dir
         .filter_map(Result::ok)
-        .filter(|d| d.path().extension() == Some(OsStr::from_bytes(b"wav")))
+        .filter(|d| d.path().extension().unwrap() == "wav")
         .collect::<Vec<_>>();
     
     let mut file_names = vec![];

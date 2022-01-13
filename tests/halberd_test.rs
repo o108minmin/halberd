@@ -23,7 +23,7 @@ fn error_required_tts_talk_type() -> Result<(), Box<dyn std::error::Error>>  {
     assert
         .failure()
         .stderr(predicate::str::contains("The following required arguments"))
-        .stderr(predicate::str::contains("TTSType"));
+        .stderr(predicate::str::contains("TTS"));
     Ok(())
 }
 

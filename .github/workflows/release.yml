@@ -1,0 +1,68 @@
+name: release
+on:
+  push:
+    tags:
+    - "[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  release:
+    name: Create release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+  build:
+    name: Build and Upload Release Asset
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact_name: halberd
+            asset_name: halberd-x86_64-unknown-linux-gnu
+          - os: ubuntu-latest
+            target: x86_64-pc-windows-gnu
+            artifact_name: halberd.exe
+            asset_name: halberd-x86_64-pc-windows-gnu
+    runs-on: ${{ matrix.os }}
+    needs: release
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+      - name: Cross build with all features Build project
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --target ${{ matrix.target }} --all-features
+      - name: Copy Files
+        run: |
+          cp target/${{ matrix.target }}/release/${{ matrix.artifact_name }} ./
+      - name: Create Zip
+        run: |
+          zip ${{ matrix.asset_name }}.zip ${{ matrix.artifact_name }} README.md
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: ./${{ matrix.asset_name }}.zip
+          asset_name: ${{ matrix.asset_name }}.zip
+          asset_content_type: application/zip
