@@ -1,90 +1,81 @@
 # halberd
 
-halberd is Text To Speech Software Subtitle Generator.
+halberdはTTS(Text To Speech)ソフトウェアのファイルから字幕を生成するCLIツールです。
 
-## poc
+<!-- # Badges -->
 
+[![Github issues](https://img.shields.io/github/issues/o108minmin/halberd)](https://github.com/o108minmin/halberd/issues)
+[![Github forks](https://img.shields.io/github/forks/o108minmin/halberd)](https://github.com/o108minmin/halberd/network/members)
+[![Github stars](https://img.shields.io/github/stars/o108minmin/halberd)](https://github.com/o108minmin/halberd/stargazers)
+[![Github top language](https://img.shields.io/github/languages/top/o108minmin/halberd)](https://github.com/o108minmin/halberd/)
+[![Github license](https://img.shields.io/github/license/o108minmin/halberd)](https://github.com/o108minmin/halberd/)
+
+## 対応TTS
+
+- [VOICEROID](https://www.ah-soft.com/voiceroid/)
+- [CoeFont](https://coefont.cloud/)
+
+## 動作例
+
+WSL2(Ubuntu 20.04)
 ### VOICEROID
 
 ```bash
-$ ls voiceroid/
+$ ls tests/data/tts/vocieroid/
 01.txt  01.wav  02.txt  02.wav
-$ iconv -f SJIS voiceroid/01.txt
+$ iconv -f SJIS tests/data/tts/vocieroid/01.txt
 テスト
-$ iconv -f SJIS voiceroid/02.txt
-こんにちは、桜乃そらです。17歳です
+$ iconv -f SJIS tests/data/tts/vocieroid/02.txt
+こんにちは、だみーです。17歳です
 
-$ cargo run voiceroid voiceroid/
-    Finished dev [unoptimized + debuginfo] target(s) in 0.00s
-     Running `target/debug/halberd voiceroid voiceroid/`
+$ halberd voiceroid tests/data/tts/vocieroid/
 1
 00:00:00,000 --> 00:00:01,269
 テスト
 
 2
-00:00:01,269 --> 00:00:06,294
-こんにちは、桜乃そらです。17歳です
+00:00:01,270 --> 00:00:06,295
+こんにちは、だみーです。17歳です
 ```
 
 ```bash
 # Generate srt file
 
-$ cargo run voiceroid voiceroid/ > voiceroid.srt
-    Finished dev [unoptimized + debuginfo] target(s) in 0.00s
-     Running `target/debug/halberd voiceroid voiceroid/`
+$ halberd voiceroid tests/data/tts/vocieroid/ > voiceroid.srt
+
 $ cat voiceroid.srt
 1
 00:00:00,000 --> 00:00:01,269
 テスト
 
 2
-00:00:01,269 --> 00:00:06,294
-こんにちは、桜乃そらです。17歳です
+00:00:01,270 --> 00:00:06,295
+こんにちは、だみーです。17歳です
 ```
 
 ### coefont studio
 
 ```bash
 $ ls coefont/
-20210815-0108_Allial_わたしわあ.txt  20210815-0108_Allial_わたしわあ.wav  20210815-0118_Allial_こんにちわ.txt  20210815-0118_Allial_こんにちわ.wav
+20210815-0108_Dummy_わたしわだ.txt  20210815-0108_Dummy_わたしわだ.wav  20210815-0118_Dummy_こんにちわ.txt  20210815-0118_Dummy_こんにちわ.wav
 $ cat coefont/20210815-0108_Allial_わたしわあ.txt
-私はアリアルです。よろしくお願いします。
-$ cat coefont/20210815-0118_Allial_こんにちわ.txt
-こんにちわ
-$ cargo run coefont coefont/
-    Finished dev [unoptimized + debuginfo] target(s) in 0.00s
-     Running `target/debug/halberd coefont coefont/`
+私はだみーです。よろしくお願いします。
+$ cat tests/data/tts/coefont/20210815-0118_Dummy_こんにちは.txt
+こんにちは
+$ halberd coefont tests/data/tts/coefont/
 1
-00:00:00,000 --> 00:00:00,975
-こんにちわ
+00:00:00,000 --> 00:00:03,499
+私はだみーです。よろしくお願いします。
 
 2
-00:00:00,975 --> 00:00:04,474
-私はアリアルです。よろしくお願いします。
+00:00:03,500 --> 00:00:04,475
+こんにちは
 ```
 
-```bash
-# Generate srt file
+## インストール方法
 
-$ cargo run coefont coefont/ > coefont.srt
-    Finished dev [unoptimized + debuginfo] target(s) in 0.00s
-     Running `target/debug/halberd coefont coefont/`
-$ cat coefont.srt
-1
-00:00:00,000 --> 00:00:00,975
-こんにちわ
+[releaseページ](https://github.com/o108minmin/halberd/releases)からダウンロードし、 `halberd` を 任意の場所( `/usr/local/bin` など)に配置後、パスを通してください
 
-2
-00:00:00,975 --> 00:00:04,474
-私はアリアルです。よろしくお願いします。
-```
+# Contributors
 
-## TODO for 1.0.0
-
-- [x] Use cli library([clap](https://github.com/clap-rs/clap))
-- [x] Use logger
-- [x] Refactor Error handling
-- [x] Refactor names
-- [x] Write unit tests
-- [x] Write integration tests
-- [x] Write documents
+- [o108minmin](https://github.com/o108minmin)

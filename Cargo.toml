@@ -1,6 +1,6 @@
 [package]
 name = "halberd"
-version = "0.2.2"
+version = "1.0.0"
 edition = "2018"
 authors = [
 	"o108minmin <o108minmin@gmail.com>",
