@@ -29,7 +29,7 @@ pub fn generate_subtitle_from_same_name_txt(path: PathBuf) -> Result<String, Box
     info!("Open {}", &text_path.to_str().unwrap());
     let text = match fs::read_to_string(text_path.as_path()) {
         Ok(s) => s,
-        Err(_) => return Err(Box::new(TextError("can't open txt file".into())))
+        Err(_) => return Err(Box::new(TextError("can't open txt file".into()))),
     };
     Ok(text)
 }
@@ -47,7 +47,7 @@ pub fn generate_subtitle_from_same_name_txt_shift_jis(
     info!("Open {}", &text_path.to_str().unwrap());
     let rawtxt = match fs::read(text_path.as_path()) {
         Ok(s) => s,
-        Err(_) => return Err(Box::new(TextError("can't open txt file".into())))
+        Err(_) => return Err(Box::new(TextError("can't open txt file".into()))),
     };
 
     // VOICEROIDで出力される文字列はShift_JISのためutf-8に変換する

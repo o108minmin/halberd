@@ -3,8 +3,8 @@ use std::error::Error;
 use std::fmt;
 use std::path::PathBuf;
 
-use crate::tts;
 use crate::text;
+use crate::tts;
 use crate::wav;
 
 pub struct Voiceroid {}

@@ -16,9 +16,10 @@ use chrono::Duration;
 use crate::tts::service;
 
 pub mod config;
-pub mod tts;
 pub mod srt;
 pub mod text;
+pub mod tts;
+pub mod unitsubrip;
 pub mod wav;
 
 #[macro_use]
@@ -92,7 +93,7 @@ pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
         .filter_map(Result::ok)
         .filter(|d| d.path().extension().unwrap() == "wav")
         .collect::<Vec<_>>();
-    
+
     let mut file_names = vec![];
     for w in wavs {
         let tmp = w.path();
@@ -106,7 +107,7 @@ pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
         let duration = Duration::from_std(StdDuration::from_secs_f64(
             wav::calculate_wave_seconds(&reader),
         ))?;
-        sub_rips.push(srt::UnitSubRip {
+        sub_rips.push(unitsubrip::UnitSubRip {
             duration,
             serif: serif.to_string(),
         })

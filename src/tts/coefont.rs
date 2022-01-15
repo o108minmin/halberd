@@ -2,8 +2,8 @@
 use std::error::Error;
 use std::path::PathBuf;
 
-use crate::tts;
 use crate::text;
+use crate::tts;
 use crate::wav;
 
 pub struct CoeFont {}

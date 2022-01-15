@@ -32,7 +32,7 @@ mod tests {
         };
         let mut writer = hound::WavWriter::create(&input, spec).unwrap();
         let expected = 5;
-        for t in (0 .. 44100*expected).map(|x| x as f32 / 44100.0) {
+        for t in (0..44100 * expected).map(|x| x as f32 / 44100.0) {
             let sample = (t * 440.0 * 2.0 * PI).sin();
             let amplitude = i16::MAX as f32;
             writer.write_sample((sample * amplitude) as i16).unwrap();

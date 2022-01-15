@@ -11,10 +11,6 @@ pub struct Config {
 
 impl Display for Config {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(
-            f,
-            "Config: tts: {}, dirname: {}",
-            self.tts, self.dirname
-        )
+        write!(f, "Config: tts: {}, dirname: {}", self.tts, self.dirname)
     }
 }

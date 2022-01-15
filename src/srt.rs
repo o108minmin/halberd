@@ -9,16 +9,9 @@ use chrono::prelude::*;
 use chrono::Duration;
 use chrono::Utc;
 
-pub struct UnitSubRip {
-    pub duration: Duration,
-    pub serif: String,
-}
+use crate::unitsubrip::UnitSubRip;
 
-impl fmt::Display for UnitSubRip {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "duration: {}, serif: {}", self.duration, self.serif)
-    }
-}
+impl Error for SrtError {}
 
 #[derive(Debug)]
 struct SrtError(String);
@@ -29,10 +22,8 @@ impl fmt::Display for SrtError {
     }
 }
 
-impl Error for SrtError {}
-
 /// 引数wに対して、vecをstrファイルとして出力する
-pub fn output_srt<W: Write>(w: &mut W ,vec: Vec<UnitSubRip>) -> Result<(), Box<dyn Error>> {
+pub fn output_srt<W: Write>(w: &mut W, vec: Vec<UnitSubRip>) -> Result<(), Box<dyn Error>> {
     let mut cursor = Utc.timestamp(0, 0);
     let mut counter = 1;
     info!("Print UnitSubRips");
@@ -51,7 +42,9 @@ pub fn output_srt<W: Write>(w: &mut W ,vec: Vec<UnitSubRip>) -> Result<(), Box<d
         if i.duration > chrono::Duration::zero() {
             cursor = cursor + i.duration;
         } else {
-            return Err(Box::new(SrtError("invalid duration: duration must be positive".into())))
+            return Err(Box::new(SrtError(
+                "invalid duration: duration must be positive".into(),
+            )));
         }
         counter += 1;
         cursor = cursor + Duration::milliseconds(1);
@@ -68,7 +61,7 @@ mod tests {
     fn normal_output_srt() {
         let mut buf = Vec::<u8>::new();
         let mut input = Vec::<UnitSubRip>::new();
-        input.push(UnitSubRip{
+        input.push(UnitSubRip {
             duration: chrono::Duration::seconds(1),
             serif: String::from("say"),
         });
@@ -83,10 +76,13 @@ mod tests {
     fn error_invalid_duration() {
         let mut buf = Vec::<u8>::new();
         let mut input = Vec::<UnitSubRip>::new();
-        input.push(UnitSubRip{
+        input.push(UnitSubRip {
             duration: chrono::Duration::seconds(-1),
             serif: String::from("negative duration"),
         });
-        assert!(output_srt(&mut buf, input).is_err(), "invalid duration: duration must be positive");
+        assert!(
+            output_srt(&mut buf, input).is_err(),
+            "invalid duration: duration must be positive"
+        );
     }
 }
