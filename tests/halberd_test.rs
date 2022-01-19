@@ -15,6 +15,16 @@ fn normal_empty_directory() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[test]
+// 入力値が正常だったとき(format指定)
+fn normal_enable_format() -> Result<(), Box<dyn std::error::Error>> {
+    let dir = tempdir().unwrap();
+    let mut cmd = Command::cargo_bin("halberd").unwrap();
+    let assert = cmd.arg("coefont").arg(dir.path()).arg("-fsrt").assert();
+    assert.success();
+    Ok(())
+}
+
+#[test]
 // 入力値が異常だったとき(TTSが指定されていない)
 fn error_required_tts_talk_type() -> Result<(), Box<dyn std::error::Error>> {
     let mut cmd = Command::cargo_bin("halberd").unwrap();

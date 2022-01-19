@@ -21,6 +21,7 @@ pub mod text;
 pub mod tts;
 pub mod unitsubrip;
 pub mod wav;
+pub mod xml;
 
 #[macro_use]
 extern crate log;
@@ -46,6 +47,22 @@ fn main() {
                 .index(2),
         )
         .arg(
+            Arg::new("format")
+                .short('f')
+                .long("format")
+                .help("output format")
+                .required(false)
+                .default_value("srt")
+                .possible_values(&["srt", "xml"]),
+        )
+        .arg(
+            Arg::new("use-ulid")
+                .short('u')
+                .long("use-ulid")
+                .help("using ulid for some idenfities")
+                .required(false),
+        )
+        .arg(
             Arg::new("debug")
                 .short('d')
                 .long("debug")
@@ -66,6 +83,8 @@ fn main() {
     let config = config::Config {
         tts: matches.value_of("TTS").unwrap().to_string(),
         dirname: matches.value_of("INPUT").unwrap().to_string(),
+        format: matches.value_of("format").unwrap().to_string(),
+        use_ulid: matches.is_present("use-ulid"),
     };
     info!("{}", config);
     run(config).unwrap_or_else(|err| {
@@ -87,6 +106,7 @@ pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
         error!("Problem reading directory: {}", err);
         process::exit(1);
     });
+    info!("format: {}", &config.format);
     let mut sub_rips = vec![];
 
     let wavs = dir
@@ -114,7 +134,11 @@ pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
     }
     let out = stdout();
     let mut handle = out.lock();
-    srt::output_srt(&mut handle, sub_rips)?;
+    if &config.format == "srt" {
+        srt::output_srt(&mut handle, sub_rips)?;
+    } else if &config.format == "xml" {
+        xml::output_xml(&mut handle, sub_rips, config.use_ulid)?;
+    }
     info!("end halberd");
     Ok(())
 }
