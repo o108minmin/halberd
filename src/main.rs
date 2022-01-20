@@ -6,7 +6,7 @@ use std::boxed::Box;
 use std::env;
 use std::error::Error;
 use std::fs;
-use std::io::stdout;
+use std::io::{stdout, Write};
 use std::path::PathBuf;
 use std::process;
 use std::time::Duration as StdDuration;
@@ -47,6 +47,14 @@ fn main() {
                 .index(2),
         )
         .arg(
+            Arg::new("outfile")
+                .short('o')
+                .long("outfile")
+                .help("output file name (if \"stdout\" is defined then using stdout)")
+                .default_value("stdout")
+                .required(false),
+        )
+        .arg(
             Arg::new("format")
                 .short('f')
                 .long("format")
@@ -80,21 +88,45 @@ fn main() {
     info!("create halberd config");
     info!("enable debug mode: {}", matches.is_present("debug"));
     info!("build config");
-    let config = config::Config {
-        tts: matches.value_of("TTS").unwrap().to_string(),
-        dirname: matches.value_of("INPUT").unwrap().to_string(),
-        format: matches.value_of("format").unwrap().to_string(),
-        use_ulid: matches.is_present("use-ulid"),
-    };
-    info!("{}", config);
-    run(config).unwrap_or_else(|err| {
-        error!("Problem running halberd: {}", err);
-        process::exit(1);
-    });
+
+    let outfile = matches.value_of("outfile").unwrap().to_string();
+    if outfile == "stdout" {
+        let out = stdout();
+        let handle = out.lock();
+        let mut config = config::Config {
+            tts: matches.value_of("TTS").unwrap().to_string(),
+            dirname: matches.value_of("INPUT").unwrap().to_string(),
+            format: matches.value_of("format").unwrap().to_string(),
+            output: handle,
+            use_ulid: matches.is_present("use-ulid"),
+        };
+        info!("{:?}", config);
+        run(&mut config).unwrap_or_else(|err| {
+            error!("Problem running halberd: {}", err);
+            process::exit(1);
+        });
+    } else {
+        let handle = fs::File::create(outfile).unwrap_or_else(|err| {
+            error!("Problem can't open file: {}", err);
+            process::exit(1);
+        });
+        let mut config = config::Config {
+            tts: matches.value_of("TTS").unwrap().to_string(),
+            dirname: matches.value_of("INPUT").unwrap().to_string(),
+            format: matches.value_of("format").unwrap().to_string(),
+            output: handle,
+            use_ulid: matches.is_present("use-ulid"),
+        };
+        info!("{:?}", config);
+        run(&mut config).unwrap_or_else(|err| {
+            error!("Problem running halberd: {}", err);
+            process::exit(1);
+        });
+    }
 }
 
 /// Configを元にhalberdを実行する
-pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
+pub fn run<W: Write>(config: &mut config::Config<W>) -> Result<(), Box<dyn Error>> {
     info!("start halberd");
     info!("input TTS: {}", &config.tts);
     let swtp = service::select_tts_talk(&config.tts).unwrap_or_else(|err| {
@@ -130,12 +162,11 @@ pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
             serif: serif.to_string(),
         })
     }
-    let out = stdout();
-    let mut handle = out.lock();
+
     if &config.format == "srt" {
-        srt::output_srt(&mut handle, sub_rips)?;
+        srt::output_srt(&mut config.output, sub_rips)?;
     } else if &config.format == "xml" {
-        xml::output_xml(&mut handle, sub_rips, config.use_ulid)?;
+        xml::output_xml(&mut config.output, sub_rips, config.use_ulid)?;
     }
     info!("end halberd");
     Ok(())

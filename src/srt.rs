@@ -22,7 +22,7 @@ impl fmt::Display for SrtError {
     }
 }
 
-/// 引数wに対して、vecをstrファイルとして出力する
+/// 引数wに対して、vecをsrtファイルとして出力する
 pub fn output_srt<W: Write>(w: &mut W, vec: Vec<UnitSubRip>) -> Result<(), Box<dyn Error>> {
     let mut cursor = Utc.timestamp(0, 0);
     let mut counter = 1;

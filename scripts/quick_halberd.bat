@@ -15,5 +15,10 @@ if %f_temp% == 1 (
 if %f_temp% == 2 (
     set tts="coefont" 
 )
+set /p file_name_temp=ファイル名を指定してください(1: 標準出力 それ以外: そのファイル名で出力)
+set file_name=%file_name_temp%
+if %file_name_temp% == 1 (
+    set file_name="stdout"
+)
 .\halberd.exe %tts% .\ -f %f% -u
 pause
