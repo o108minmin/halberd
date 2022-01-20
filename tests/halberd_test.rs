@@ -60,10 +60,25 @@ fn error_txt_file_not_found() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[test]
-// 入力値が異常だったとき(指定したディレクトリが存在しない)
+// 入力値が異常だったとき(入力元に指定したディレクトリが存在しない)
 fn error_input_not_found() -> Result<(), Box<dyn std::error::Error>> {
     let mut cmd = Command::cargo_bin("halberd").unwrap();
     let assert = cmd.arg("coefont").arg("./notfound").assert();
+    assert
+        .failure()
+        .stderr(predicate::str::contains("No such file or directory"));
+    Ok(())
+}
+
+#[test]
+// 入力値が異常だったとき(出力先に指定したディレクトリが存在しない)
+fn error_output_not_found() -> Result<(), Box<dyn std::error::Error>> {
+    let mut cmd = Command::cargo_bin("halberd").unwrap();
+    let assert = cmd
+        .arg("coefont")
+        .arg("tests/data/error/coefont")
+        .arg("-onotfound/output.srt")
+        .assert();
     assert
         .failure()
         .stderr(predicate::str::contains("No such file or directory"));

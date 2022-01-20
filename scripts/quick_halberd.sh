@@ -21,4 +21,11 @@ if [ $f_temp = "2" ]
 then
     f="xml"
 fi
-./halberd $tts ./ -f $f -u
+echo 'ファイル名を指定してください(1: 標準出力 それ以外: そのファイル名で出力)'
+read file_name_temp
+file_name=$file_name_temp
+if [ $file_name_temp = "1" ]
+then
+    file_name="stdout"
+fi
+./halberd $tts ./ -f $f -u -o $file_name
