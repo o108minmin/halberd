@@ -108,20 +108,18 @@ pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
     });
     info!("format: {}", &config.format);
     let mut sub_rips = vec![];
-
-    let wavs = dir
-        .filter_map(Result::ok)
-        .filter(|d| d.path().extension().unwrap() == "wav")
-        .collect::<Vec<_>>();
-
-    let mut file_names = vec![];
-    for w in wavs {
-        let tmp = w.path();
-        file_names.push(tmp);
+    let mut wavs: Vec<std::path::PathBuf> = Vec::new();
+    for entry in dir {
+        let path = entry.unwrap().path();
+        if let Some(extension) = path.extension() {
+            if extension == "wav" {
+                wavs.push(path);
+            }
+        }
     }
-    file_names.sort();
+    wavs.sort();
 
-    for f in file_names.iter() {
+    for f in wavs.iter() {
         let serif = swtp.serif_generator(PathBuf::from(&f))?;
         let reader = hound::WavReader::open(PathBuf::from(&f))?;
         let duration = Duration::from_std(StdDuration::from_secs_f64(

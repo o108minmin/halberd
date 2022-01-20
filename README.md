@@ -74,6 +74,17 @@ $ halberd coefont tests/data/tts/coefont/
 
 ## インストール方法
 
+### クイックスタート
+
+[releaseページ](https://github.com/o108minmin/halberd/releases)からダウンロードし、下記のように同名のwavファイルとtxtファイルを配置したら `quick_halberd` を実行してください
+
+```bash
+$ ls coefont/
+20210815-0108_Dummy_わたしわだ.txt  20210815-0108_Dummy_わたしわだ.wav  20210815-0118_Dummy_こんにちわ.txt  20210815-0118_Dummy_こんにちわ.wav
+```
+
+### 上級インストール
+
 [releaseページ](https://github.com/o108minmin/halberd/releases)からダウンロードし、 `halberd` を 任意の場所( `/usr/local/bin` など)に配置後、パスを通してください
 
 # Contributors
