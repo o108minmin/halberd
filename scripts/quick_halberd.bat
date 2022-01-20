@@ -2,18 +2,18 @@
 set /p tts_temp=TTSの種類を入力してください(1: voiceroid, 2: coefont)
 set tts=%tts_temp%
 if %tts_temp% == 1 (
-    set tts="voiceroid" 
+    set tts="voiceroid"
 )
 if %tts_temp% == 2 (
-    set tts="coefont" 
+    set tts="coefont"
 )
 set /p f_temp=フォーマットを指定してください(1: srt, 2: xml)
 set f=%f_temp%
 if %f_temp% == 1 (
-    set tts="voiceroid" 
+    set f="srt"
 )
 if %f_temp% == 2 (
-    set tts="coefont" 
+    set f="xml"
 )
 set /p file_name_temp=ファイル名を指定してください(1: 標準出力 それ以外: そのファイル名で出力)
 set file_name=%file_name_temp%
