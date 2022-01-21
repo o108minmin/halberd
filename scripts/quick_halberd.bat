@@ -20,5 +20,5 @@ set file_name=%file_name_temp%
 if %file_name_temp% == 1 (
     set file_name="stdout"
 )
-.\halberd.exe %tts% .\ -f %f% -u
+.\halberd.exe %tts% .\ -f %f% -o %file_name% -u
 pause
