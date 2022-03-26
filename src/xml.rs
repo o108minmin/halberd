@@ -5,7 +5,7 @@ use std::fmt;
 use std::io::Write;
 use std::result::Result;
 
-use chrono::Duration;
+use time::Duration;
 use ulid::Ulid;
 use xml::writer::{EmitterConfig, XmlEvent};
 
@@ -97,9 +97,9 @@ pub fn output_xml<W: Write>(
     let mut cursor = Duration::milliseconds(0);
     let mut counter = 1;
     for i in vec.iter() {
-        let offset = format!("{}/1000s", cursor.num_milliseconds());
+        let offset = format!("{}/1000s", (cursor.as_seconds_f64() * 1000.0) as i64);
         let name = format!("{}", counter);
-        let duration = format!("{}/1000s", i.duration.num_milliseconds());
+        let duration = format!("{}/1000s", (i.duration.as_seconds_f64() * 1000.0) as i64);
         let title_s = XmlEvent::start_element("title")
             .attr("ref", "r2")
             .attr("offset", &offset)
@@ -121,7 +121,7 @@ pub fn output_xml<W: Write>(
 
         let title_e = XmlEvent::end_element();
         writer.write(title_e).unwrap();
-        if i.duration > chrono::Duration::zero() {
+        if i.duration > time::Duration::ZERO {
             cursor = cursor + i.duration + Duration::milliseconds(1);
         } else {
             return Err(Box::new(XmlError(
@@ -160,7 +160,7 @@ mod tests {
         let mut buf = Vec::<u8>::new();
         let mut input = Vec::<UnitSubRip>::new();
         input.push(UnitSubRip {
-            duration: chrono::Duration::seconds(-1),
+            duration: time::Duration::seconds(-1),
             serif: String::from("negative duration"),
         });
         assert!(

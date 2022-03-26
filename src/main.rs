@@ -9,9 +9,8 @@ use std::fs;
 use std::io::{stdout, Write};
 use std::path::PathBuf;
 use std::process;
-use std::time::Duration as StdDuration;
 
-use chrono::Duration;
+use time::Duration;
 
 use crate::tts::service;
 
@@ -154,9 +153,9 @@ pub fn run<W: Write>(config: &mut config::Config<W>) -> Result<(), Box<dyn Error
     for f in wavs.iter() {
         let serif = swtp.serif_generator(PathBuf::from(&f))?;
         let reader = hound::WavReader::open(PathBuf::from(&f))?;
-        let duration = Duration::from_std(StdDuration::from_secs_f64(
+        let duration = Duration::seconds_f64(
             wav::calculate_wave_seconds(&reader),
-        ))?;
+        );
         sub_rips.push(unitsubrip::UnitSubRip {
             duration,
             serif: serif.to_string(),

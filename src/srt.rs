@@ -5,9 +5,8 @@ use std::fmt;
 use std::io::Write;
 use std::result::Result;
 
-use chrono::prelude::*;
-use chrono::Duration;
-use chrono::Utc;
+use time::Duration;
+use time::macros::format_description;
 
 use crate::unitsubrip::UnitSubRip;
 
@@ -24,30 +23,33 @@ impl fmt::Display for SrtError {
 
 /// 引数wに対して、vecをsrtファイルとして出力する
 pub fn output_srt<W: Write>(w: &mut W, vec: Vec<UnitSubRip>) -> Result<(), Box<dyn Error>> {
-    let mut cursor = Utc.timestamp(0, 0);
+    let mut cursor = time::Time::MIDNIGHT;
     let mut counter = 1;
+    let formatting = format_description!("[hour]:[minute]:[second],[subsecond digits:3]");
     info!("Print UnitSubRips");
     debug!("input vec length: {}", vec.len());
     for i in vec.iter() {
+        let start_cursol = cursor.format(formatting)?;
+        let end_cursol = (cursor + i.duration).format(formatting)?;
         info!("{}", i);
         writeln!(w, "{}", counter)?;
         writeln!(
             w,
             "{} --> {}",
-            cursor.format("%H:%M:%S,%3f"),
-            (cursor + i.duration).format("%H:%M:%S,%3f")
+            start_cursol,
+            end_cursol
         )?;
         writeln!(w, "{}", i.serif)?;
         writeln!(w)?;
-        if i.duration > chrono::Duration::zero() {
-            cursor = cursor + i.duration;
+        if i.duration > time::Duration::ZERO {
+            cursor += i.duration;
         } else {
             return Err(Box::new(SrtError(
                 "invalid duration: duration must be positive".into(),
             )));
         }
         counter += 1;
-        cursor = cursor + Duration::milliseconds(1);
+        cursor += Duration::milliseconds(1);
     }
     w.flush()?;
     Ok(())
@@ -62,7 +64,7 @@ mod tests {
         let mut buf = Vec::<u8>::new();
         let mut input = Vec::<UnitSubRip>::new();
         input.push(UnitSubRip {
-            duration: chrono::Duration::seconds(1),
+            duration: time::Duration::seconds(1),
             serif: String::from("say"),
         });
         let expected = b"1\n00:00:00,000 --> 00:00:01,000\nsay\n\n";
@@ -77,7 +79,7 @@ mod tests {
         let mut buf = Vec::<u8>::new();
         let mut input = Vec::<UnitSubRip>::new();
         input.push(UnitSubRip {
-            duration: chrono::Duration::seconds(-1),
+            duration: time::Duration::seconds(-1),
             serif: String::from("negative duration"),
         });
         assert!(
