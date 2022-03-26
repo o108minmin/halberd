@@ -1,6 +1,6 @@
 use std::fmt;
 
-use chrono::Duration;
+use time::Duration;
 
 pub struct UnitSubRip {
     pub duration: Duration,
