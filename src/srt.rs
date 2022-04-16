@@ -5,8 +5,8 @@ use std::fmt;
 use std::io::Write;
 use std::result::Result;
 
-use time::Duration;
 use time::macros::format_description;
+use time::Duration;
 
 use crate::unitsubrip::UnitSubRip;
 
@@ -33,12 +33,7 @@ pub fn output_srt<W: Write>(w: &mut W, vec: Vec<UnitSubRip>) -> Result<(), Box<d
         let end_cursol = (cursor + i.duration).format(formatting)?;
         info!("{}", i);
         writeln!(w, "{}", counter)?;
-        writeln!(
-            w,
-            "{} --> {}",
-            start_cursol,
-            end_cursol
-        )?;
+        writeln!(w, "{} --> {}", start_cursol, end_cursol)?;
         writeln!(w, "{}", i.serif)?;
         writeln!(w)?;
         if i.duration > time::Duration::ZERO {

@@ -1,5 +1,5 @@
 //! cli gateway for halberd.
-use clap::{App, Arg};
+use clap::{Arg, Command};
 use env_logger::Builder;
 use log::LevelFilter;
 use std::boxed::Box;
@@ -26,7 +26,7 @@ pub mod xml;
 extern crate log;
 /// cli gatewayとしてのmain関数
 fn main() {
-    let matches = App::new("halberd")
+    let matches = Command::new("halberd")
         .bin_name(env!("CARGO_BIN_NAME"))
         .version(env!("CARGO_PKG_VERSION"))
         .about(env!("CARGO_PKG_DESCRIPTION"))
@@ -153,9 +153,7 @@ pub fn run<W: Write>(config: &mut config::Config<W>) -> Result<(), Box<dyn Error
     for f in wavs.iter() {
         let serif = swtp.serif_generator(PathBuf::from(&f))?;
         let reader = hound::WavReader::open(PathBuf::from(&f))?;
-        let duration = Duration::seconds_f64(
-            wav::calculate_wave_seconds(&reader),
-        );
+        let duration = Duration::seconds_f64(wav::calculate_wave_seconds(&reader));
         sub_rips.push(unitsubrip::UnitSubRip {
             duration,
             serif: serif.to_string(),
