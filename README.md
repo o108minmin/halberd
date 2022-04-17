@@ -19,6 +19,8 @@ halberdはTTS(Text To Speech)ソフトウェアのファイルから字幕(srt, 
 - [VOICEROID](https://www.ah-soft.com/voiceroid/)
 - [CoeFont](https://coefont.cloud/)
 
+halberdは上記TTSの権利を有する方々とは関係ない非公式のものになります
+
 推奨される設定などは[tips](https://github.com/o108minmin/halberd/tree/main/docs/tips)に書いてあります
 
 ## 動作例
