@@ -4,6 +4,7 @@ use crate::tts::profile;
 use crate::tts::voiceroid::Voiceroid;
 use crate::tts::voicevox::Voicevox;
 use crate::tts::softalk::Softalk;
+use crate::tts::talqu::Talqu;
 
 /// profile_nameから対応するTTSを選択する
 /// * `profile_name` - TTSの名前
@@ -14,6 +15,7 @@ pub fn select_tts_talk(profile_name: &str) -> Result<Box<dyn profile::TTS>, &'st
         "coefont" => Ok(Box::new(CoeFont {})),
         "voicevox" => Ok(Box::new(Voicevox {})),
         "softalk" => Ok(Box::new(Softalk {})),
+        "talqu" => Ok(Box::new(Talqu {})),
         _ => Err("Didn't match profile name"),
     }
 }
@@ -54,6 +56,15 @@ mod tests {
     fn normal_select_softalk() {
         let input = "softalk";
         let expected = "softalk";
+        let result = select_tts_talk(input).unwrap();
+        assert_eq!(result.get_profile_name(), expected);
+    }
+
+    #[test]
+    // 入力値が正常だったとき(入力値がtalqu)
+    fn normal_select_talqu() {
+        let input = "talqu";
+        let expected = "talqu";
         let result = select_tts_talk(input).unwrap();
         assert_eq!(result.get_profile_name(), expected);
     }

@@ -1,5 +1,5 @@
 #!/bin/sh
-echo "TTSの種類を入力してください(1: voiceroid, 2: coefont, 3: voicevox, 4: softalk)"
+echo "TTSの種類を入力してください(1: voiceroid, 2: coefont, 3: voicevox, 4: softalk, 5: talqu)"
 read tts;
 if [ $tts = "1" ]
 then
@@ -16,6 +16,10 @@ fi
 if [ $tts = "4" ]
 then
     tts="softalk"
+fi
+if [ $tts = "5" ]
+then
+    tts="talqu"
 fi
 
 echo "ディレクトリのパスを入力してください(1: 今のディレクトリで実行, それ以外: 入力)"
