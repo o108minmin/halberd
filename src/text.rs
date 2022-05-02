@@ -5,7 +5,7 @@ use std::fmt;
 use std::fs;
 use std::path::PathBuf;
 
-use encoding_rs::SHIFT_JIS;
+use encoding_rs::{SHIFT_JIS, UTF_8};
 
 #[derive(Debug)]
 struct TextError(String);
@@ -27,11 +27,13 @@ pub fn generate_subtitle_from_same_name_txt(path: PathBuf) -> Result<String, Box
     let mut text_path = path;
     text_path.set_extension("txt");
     info!("Open {}", &text_path.to_str().unwrap());
-    let text = match fs::read_to_string(text_path.as_path()) {
+    let rawtxt = match fs::read(text_path.as_path()) {
         Ok(s) => s,
         Err(_) => return Err(Box::new(TextError("can't open txt file".into()))),
     };
-    Ok(text)
+    let (res, _, _) = UTF_8.decode(&rawtxt);
+    let ans = res.into_owned();
+    Ok(ans)
 }
 
 /// 引数pathと同じ名前のtxtファイル(Shift_JIS))の中身を読む
