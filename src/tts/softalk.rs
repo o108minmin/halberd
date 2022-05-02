@@ -1,4 +1,4 @@
-//! softalk関係のモジュール
+//! Softalk関係のモジュール
 use std::error::Error;
 use std::fmt;
 use std::path::PathBuf;

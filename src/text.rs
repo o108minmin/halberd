@@ -5,7 +5,7 @@ use std::fmt;
 use std::fs;
 use std::path::PathBuf;
 
-use encoding_rs::{SHIFT_JIS, UTF_8, UTF_16LE};
+use encoding_rs::{SHIFT_JIS, UTF_16LE, UTF_8};
 
 #[derive(Debug)]
 struct TextError(String);

@@ -1,4 +1,4 @@
-//! CoeFont関係のモジュール
+//! VOICEVOX関係のモジュール
 use std::error::Error;
 use std::path::PathBuf;
 
