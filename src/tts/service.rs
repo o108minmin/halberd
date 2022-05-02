@@ -1,10 +1,10 @@
 //! TTS関係の雑多な関数
 use crate::tts::coefont::CoeFont;
 use crate::tts::profile;
-use crate::tts::voiceroid::Voiceroid;
-use crate::tts::voicevox::Voicevox;
 use crate::tts::softalk::Softalk;
 use crate::tts::talqu::Talqu;
+use crate::tts::voiceroid::Voiceroid;
+use crate::tts::voicevox::Voicevox;
 
 /// profile_nameから対応するTTSを選択する
 /// * `profile_name` - TTSの名前
