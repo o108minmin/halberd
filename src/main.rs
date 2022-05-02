@@ -35,7 +35,7 @@ fn main() {
             Arg::new("TTS")
                 .help("set TTS")
                 .required(true)
-                .possible_values(&["voiceroid", "coefont", "voicevox", "softalk"])
+                .possible_values(&["voiceroid", "coefont", "voicevox", "softalk", "talqu"])
                 .index(1),
         )
         .arg(

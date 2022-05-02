@@ -52,7 +52,6 @@ pub fn generate_subtitle_from_same_name_txt_shift_jis(
         Err(_) => return Err(Box::new(TextError("can't open txt file".into()))),
     };
 
-    // VOICEROIDで出力される文字列はShift_JISのためutf-8に変換する
     let (res, _, _) = SHIFT_JIS.decode(&rawtxt);
     let text = res.into_owned();
     Ok(text)

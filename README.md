@@ -20,6 +20,7 @@ halberdはTTS(Text To Speech)ソフトウェアのファイルから字幕(srt, 
 - [CoeFont](https://coefont.cloud/)
 - [VOICEVOX](https://voicevox.hiroshiba.jp/)
 - [SofTalk](https://w.atwiki.jp/softalk/)
+- [TALQu](https://booth.pm/ja/items/2755336ls)
 
 halberdは上記TTSの権利を有する方々とは関係ない非公式のものになります
 

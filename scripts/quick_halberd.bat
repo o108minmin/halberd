@@ -1,5 +1,5 @@
 .\halberd.exe --version
-set /p tts=TTS‚ÌŽí—Þ‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢(1: voiceroid, 2: coefont, 3: voicevox, 4: softalk)
+set /p tts=TTS‚ÌŽí—Þ‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢(1: voiceroid, 2: coefont, 3: voicevox, 4: softalk, 5: talqu)
 set tts=%tts%
 if %tts% == 1 (
     set tts="voiceroid"
@@ -12,6 +12,9 @@ if %tts% == 3 (
 )
 if %tts% == 4 (
     set tts="softalk"
+)
+if %tts% == 5 (
+    set tts="talqu"
 )
 
 set input="%~f1"

@@ -4,3 +4,4 @@ pub mod service;
 pub mod voiceroid;
 pub mod voicevox;
 pub mod softalk;
+pub mod talqu;
