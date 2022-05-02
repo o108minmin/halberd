@@ -1,11 +1,17 @@
 .\halberd.exe --version
-set /p tts=TTS‚ÌŽí—Þ‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢(1: voiceroid, 2: coefont)
+set /p tts=TTS‚ÌŽí—Þ‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢(1: voiceroid, 2: coefont, 3: voicevox, 4: softalk)
 set tts=%tts%
 if %tts% == 1 (
     set tts="voiceroid"
 )
 if %tts% == 2 (
     set tts="coefont"
+)
+if %tts% == 3 (
+    set tts="voicevox"
+)
+if %tts% == 4 (
+    set tts="softalk"
 )
 
 set input="%~f1"

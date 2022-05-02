@@ -5,7 +5,7 @@ use std::fmt;
 use std::fs;
 use std::path::PathBuf;
 
-use encoding_rs::{SHIFT_JIS, UTF_8};
+use encoding_rs::{SHIFT_JIS, UTF_8, UTF_16LE};
 
 #[derive(Debug)]
 struct TextError(String);
@@ -56,6 +56,26 @@ pub fn generate_subtitle_from_same_name_txt_shift_jis(
     let (res, _, _) = SHIFT_JIS.decode(&rawtxt);
     let text = res.into_owned();
     Ok(text)
+}
+
+/// 引数pathと同じ名前のtxtファイル(UTF-16 LE))の中身を読む
+/// * `path` - 対象のファイル
+/// ok path = "01.wav" かつ 01.txtが存在する
+pub fn generate_subtitle_from_same_name_txt_utf_16le(
+    path: PathBuf,
+) -> Result<String, Box<dyn Error>> {
+    info!("Genarate subtitle from UTF_16LE txt file");
+    info!("input path: {}", &path.to_str().unwrap());
+    let mut text_path = path;
+    text_path.set_extension("txt");
+    info!("Open {}", &text_path.to_str().unwrap());
+    let rawtxt = match fs::read(text_path.as_path()) {
+        Ok(s) => s,
+        Err(_) => return Err(Box::new(TextError("can't open txt file".into()))),
+    };
+    let (res, _, _) = UTF_16LE.decode(&rawtxt);
+    let answer = res.into_owned();
+    Ok(answer)
 }
 
 #[cfg(test)]
@@ -125,7 +145,7 @@ mod tests {
 
     #[test]
     // 入力値が正常だったとき(txtファイルの中身がutf-8)
-    // 入力値がutf-8かつ英数字の時は文字化けしない
+    // 入力値がShift_JISかつ英数字の時は文字化けしない
     fn normal_generate_subtitle_from_same_name_txt_shift_jis_unicode() {
         let dir = tempdir().unwrap();
         let input = dir.path().join("test.txt");
