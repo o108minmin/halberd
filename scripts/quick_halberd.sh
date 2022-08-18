@@ -39,9 +39,13 @@ if [ $format = "2" ]
 then
     format="xml"
 fi
-echo "ファイル名を指定してください(1: 標準出力 それ以外: そのファイル名で出力)"
+echo "ファイル名を指定してください(1: フォルダ名を使用 2: 標準出力 それ以外: そのファイル名で出力)"
 read file_name
 if [ $file_name = "1" ]
+then
+    file_name="dirname"
+fi
+if [ $file_name = "2" ]
 then
     file_name="stdout"
 fi

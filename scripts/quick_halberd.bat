@@ -33,8 +33,11 @@ if %format% == 2 (
     set format="xml"
 )
 
-set /p file_name=ファイル名を指定してください(1: 標準出力 それ以外: そのファイル名で出力)
+set /p file_name=ファイル名を指定してください(1: フォルダ名を使用 2: 標準出力 それ以外: そのファイル名で出力)
 if %file_name% == 1 (
+    set file_name="dirname"
+)
+if %file_name% == 2 (
     set file_name="stdout"
 )
 .\halberd.exe %tts% %input% -f %format% -o %file_name% -u
