@@ -11,6 +11,6 @@ pub struct Config<W> {
     pub tts: String,
     pub dirname: String,
     pub format: String,
-    pub use_ulid: bool,
+    pub use_timestamp: bool,
     pub output: W,
 }

@@ -63,10 +63,10 @@ fn main() {
                 .possible_values(&["srt", "xml"]),
         )
         .arg(
-            Arg::new("use-ulid")
-                .short('u')
-                .long("use-ulid")
-                .help("using ulid for some idenfities")
+            Arg::new("use-timestamp")
+                .short('t')
+                .long("use-timestamp")
+                .help("using timestamp for the event name(xml only)")
                 .required(false),
         )
         .arg(
@@ -97,7 +97,7 @@ fn main() {
             dirname: matches.value_of("INPUT").unwrap().to_string(),
             format: matches.value_of("format").unwrap().to_string(),
             output: handle,
-            use_ulid: matches.is_present("use-ulid"),
+            use_timestamp: matches.is_present("use-timestamp"),
         };
         info!("{:?}", config);
         run(&mut config).unwrap_or_else(|err| {
@@ -125,7 +125,7 @@ fn main() {
             dirname: matches.value_of("INPUT").unwrap().to_string(),
             format: matches.value_of("format").unwrap().to_string(),
             output: handle,
-            use_ulid: matches.is_present("use-ulid"),
+            use_timestamp: matches.is_present("use-timestamp"),
         };
         info!("{:?}", config);
         run(&mut config).unwrap_or_else(|err| {
@@ -174,7 +174,14 @@ pub fn run<W: Write>(config: &mut config::Config<W>) -> Result<(), Box<dyn Error
     if &config.format == "srt" {
         srt::output_srt(&mut config.output, sub_rips)?;
     } else if &config.format == "xml" {
-        xml::output_xml(&mut config.output, sub_rips, config.use_ulid)?;
+        // event名生成
+        let path = Path::new(&config.dirname);
+        let dir_name = match path.file_name() {
+            None => panic!("Problem converting directory name"),
+            Some(s) => s,
+        };
+        let event_name = dir_name.to_os_string().into_string().unwrap();
+        xml::output_xml(&mut config.output, sub_rips, config.use_timestamp, event_name)?;
     }
     info!("end halberd");
     Ok(())
