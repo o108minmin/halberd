@@ -1,6 +1,6 @@
 [package]
 name = "halberd"
-version = "1.4.0"
+version = "1.4.1"
 edition = "2018"
 authors = [
 	"o108minmin <o108minmin@gmail.com>",
@@ -10,8 +10,8 @@ repository = "https://github.com/o108minmin/halberd"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-encoding_rs = "*"
-hound = "*"
+encoding_rs = "0.8.31"
+hound = "3.4.0"
 clap = "3.1.9"
 log = "0.4.16"
 env_logger = "0.9.0"
