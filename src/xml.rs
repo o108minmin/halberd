@@ -5,8 +5,7 @@ use std::fmt;
 use std::io::Write;
 use std::result::Result;
 
-use time::Duration;
-use ulid::Ulid;
+use time::{format_description, Duration, OffsetDateTime};
 use xml::writer::{EmitterConfig, XmlEvent};
 
 use crate::unitsubrip::UnitSubRip;
@@ -26,7 +25,8 @@ impl fmt::Display for XmlError {
 pub fn output_xml<W: Write>(
     w: &mut W,
     vec: Vec<UnitSubRip>,
-    use_ulid: bool,
+    use_timestamp: bool,
+    event_name: String,
 ) -> Result<(), Box<dyn Error>> {
     info!("Print UnitSubRips");
     debug!("input vec length: {}", vec.len());
@@ -60,16 +60,18 @@ pub fn output_xml<W: Write>(
 
     let library_s = XmlEvent::start_element("library");
     writer.write(library_s).unwrap();
-    let mut event = "event";
-    let ulid = Ulid::new();
-    let s = ulid.to_string();
-    if use_ulid {
-        event = &s;
+    let mut event = event_name;
+    if use_timestamp {
+        let now = OffsetDateTime::now_local()?;
+        let format = format_description::parse("-[year]-[month]-[day]-[hour]-[minute]-[second]")?;
+        let timestamp = now.format(&format)?;
+        event += timestamp.as_str();
     }
-    let event_s = XmlEvent::start_element("event").attr("name", event);
+
+    let event_s = XmlEvent::start_element("event").attr("name", event.as_str());
     writer.write(event_s).unwrap();
 
-    let project_s = XmlEvent::start_element("project").attr("name", event);
+    let project_s = XmlEvent::start_element("project").attr("name", event.as_str());
     writer.write(project_s).unwrap();
 
     let sequence_s = XmlEvent::start_element("sequence").attr("format", "r1");
@@ -164,7 +166,7 @@ mod tests {
             serif: String::from("negative duration"),
         });
         assert!(
-            output_xml(&mut buf, input, false).is_err(),
+            output_xml(&mut buf, input, false, "event".to_string()).is_err(),
             "invalid duration: duration must be positive"
         );
     }

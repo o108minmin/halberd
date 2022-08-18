@@ -5,8 +5,8 @@
     <effect id="r2" name="text" />
   </resources>
   <library>
-    <event name="event">
-      <project name="event">
+    <event name="coefont">
+      <project name="coefont">
         <sequence format="r1">
           <spine>
             <text-style-def id="ts1">

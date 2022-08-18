@@ -49,4 +49,4 @@ if [ $file_name = "2" ]
 then
     file_name="stdout"
 fi
-./halberd $tts $input -f $format -u -o $file_name
+./halberd $tts $input -f $format -t -o $file_name
