@@ -64,3 +64,21 @@ fn normal_coefont_xml_file() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(result, expected);
     Ok(())
 }
+
+#[test]
+// 入力値が正常だったとき(ファイル名にディレクトリ名を使用)
+fn normal_coefont_file_name_using_dirname() -> Result<(), Box<dyn std::error::Error>> {
+    let expected = fs::read_to_string("tests/data/xml/normal_coefont_xml.xml").unwrap();
+
+    let mut cmd = Command::cargo_bin("halberd").unwrap();
+    let assert = cmd
+        .arg("coefont")
+        .arg("tests/data/tts/coefont")
+        .arg("-fxml")
+        .arg("-odirname")
+        .assert();
+    let result = fs::read_to_string("coefont.xml").unwrap();
+    assert.success();
+    assert_eq!(result, expected);
+    Ok(())
+}

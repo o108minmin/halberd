@@ -7,7 +7,7 @@ use std::env;
 use std::error::Error;
 use std::fs;
 use std::io::{stdout, Write};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process;
 
 use time::Duration;
@@ -49,7 +49,7 @@ fn main() {
             Arg::new("outfile")
                 .short('o')
                 .long("outfile")
-                .help("output file name (if \"stdout\" is defined then using stdout)")
+                .help("output file name (if \"stdout\" is defined then using stdout) (if \"dirname\" is defined then using dirname)")
                 .default_value("stdout")
                 .required(false),
         )
@@ -88,7 +88,7 @@ fn main() {
     info!("enable debug mode: {}", matches.is_present("debug"));
     info!("build config");
 
-    let outfile = matches.value_of("outfile").unwrap().to_string();
+    let mut outfile = matches.value_of("outfile").unwrap().to_string();
     if outfile == "stdout" {
         let out = stdout();
         let handle = out.lock();
@@ -105,6 +105,17 @@ fn main() {
             process::exit(1);
         });
     } else {
+        if outfile == "dirname" {
+            // ファイル名にディレクトリ名を使用する指定があった場合
+            let fullpath = matches.value_of("INPUT").unwrap().to_string();
+            let path = Path::new(&fullpath);
+            let dir_name = match path.file_name() {
+                None => panic!("Problem converting directory name"),
+                Some(s) => s,
+            };
+            let format = matches.value_of("format").unwrap().to_string();
+            outfile = dir_name.to_os_string().into_string().unwrap() + "." + &format;
+        }
         let handle = fs::File::create(outfile).unwrap_or_else(|err| {
             error!("Problem can't open file: {}", err);
             process::exit(1);
