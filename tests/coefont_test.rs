@@ -82,3 +82,21 @@ fn normal_coefont_file_name_using_dirname() -> Result<(), Box<dyn std::error::Er
     assert_eq!(result, expected);
     Ok(())
 }
+
+#[test]
+// 入力値が正常だったとき(txtが存在するがwavが存在しないlazyなフォルダを入力し、xmlでファイルに出力)
+fn normal_coefont_xml_file_lazy() -> Result<(), Box<dyn std::error::Error>> {
+    let expected = fs::read_to_string("tests/data/xml/normal_coefont_lazy_xml.xml").unwrap();
+
+    let mut cmd = Command::cargo_bin("halberd").unwrap();
+    let assert = cmd
+        .arg("coefont")
+        .arg("tests/data/tts/coefont_lazy")
+        .arg("-fxml")
+        .arg("-odirname")
+        .assert();
+    let result = fs::read_to_string("coefont_lazy.xml").unwrap();
+    assert.success();
+    assert_eq!(result, expected);
+    Ok(())
+}

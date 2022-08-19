@@ -11,13 +11,10 @@ pub struct Voiceroid {}
 
 impl tts::profile::TTS for Voiceroid {
     fn serif_generator(&self, path: PathBuf) -> Result<String, Box<dyn Error>> {
-        text::generate_subtitle_from_same_name_txt_shift_jis(path)
+        text::generate_subtitle_from_txt_shift_jis(path)
     }
-    fn wave_time_generator(
-        &self,
-        reader: &hound::WavReader<std::io::BufReader<std::fs::File>>,
-    ) -> f64 {
-        wav::calculate_wave_seconds(reader)
+    fn wave_time_generator(&self, path: PathBuf) -> Result<f64, Box<dyn Error>> {
+        wav::calculate_wave_seconds(path)
     }
     fn get_profile_name(&self) -> &'static str {
         "voiceroid"

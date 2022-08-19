@@ -15,6 +15,19 @@ fn normal_empty_directory() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[test]
+// 入力値が正常だったとき(wavファイルは存在するが、txtファイルが存在しない)
+fn normal_txt_file_not_found() -> Result<(), Box<dyn std::error::Error>> {
+    let mut cmd = Command::cargo_bin("halberd").unwrap();
+    //let assert = cmd.arg("coefont").arg("coefont").arg("tests/data/normal/coefont").assert();
+    let assert = cmd
+        .arg("coefont")
+        .arg("tests/data/normal/coefont_no_txt")
+        .assert();
+    assert.success();
+    Ok(())
+}
+
+#[test]
 // 入力値が正常だったとき(format指定)
 fn normal_enable_format() -> Result<(), Box<dyn std::error::Error>> {
     let dir = tempdir().unwrap();
@@ -49,17 +62,6 @@ fn error_invalid_tts_talk_type() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[test]
-// 入力値が異常だったとき(wavファイルは存在するが、txtファイルが存在しない)
-fn error_txt_file_not_found() -> Result<(), Box<dyn std::error::Error>> {
-    let mut cmd = Command::cargo_bin("halberd").unwrap();
-    let assert = cmd.arg("coefont").arg("tests/data/error/coefont").assert();
-    assert
-        .failure()
-        .stderr(predicate::str::contains("TextError"));
-    Ok(())
-}
-
-#[test]
 // 入力値が異常だったとき(入力元に指定したディレクトリが存在しない)
 fn error_input_not_found() -> Result<(), Box<dyn std::error::Error>> {
     let mut cmd = Command::cargo_bin("halberd").unwrap();
@@ -76,7 +78,7 @@ fn error_output_not_found() -> Result<(), Box<dyn std::error::Error>> {
     let mut cmd = Command::cargo_bin("halberd").unwrap();
     let assert = cmd
         .arg("coefont")
-        .arg("tests/data/error/coefont")
+        .arg("tests/data/normal/coefont")
         .arg("-onotfound/output.srt")
         .assert();
     assert

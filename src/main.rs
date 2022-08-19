@@ -150,21 +150,24 @@ pub fn run<W: Write>(config: &mut config::Config<W>) -> Result<(), Box<dyn Error
     });
     info!("format: {}", &config.format);
     let mut sub_rips = vec![];
-    let mut wavs: Vec<std::path::PathBuf> = Vec::new();
+    let mut txts: Vec<std::path::PathBuf> = Vec::new();
     for entry in dir {
         let path = entry.unwrap().path();
         if let Some(extension) = path.extension() {
-            if extension == "wav" {
-                wavs.push(path);
+            if extension == "txt" {
+                txts.push(path);
             }
         }
     }
-    wavs.sort();
+    txts.sort();
 
-    for f in wavs.iter() {
+    for f in txts.iter() {
         let serif = swtp.serif_generator(PathBuf::from(&f))?;
-        let reader = hound::WavReader::open(PathBuf::from(&f))?;
-        let duration = Duration::seconds_f64(wav::calculate_wave_seconds(&reader));
+        let mut wav = f.clone();
+        wav.set_extension("wav");
+        // durationを設定: 失敗しても1で設定する
+        let duration =
+            Duration::seconds_f64(wav::calculate_wave_seconds(PathBuf::from(&wav)).unwrap_or(1.0));
         sub_rips.push(unitsubrip::UnitSubRip {
             duration,
             serif: serif.to_string(),
@@ -181,7 +184,12 @@ pub fn run<W: Write>(config: &mut config::Config<W>) -> Result<(), Box<dyn Error
             Some(s) => s,
         };
         let event_name = dir_name.to_os_string().into_string().unwrap();
-        xml::output_xml(&mut config.output, sub_rips, config.use_timestamp, event_name)?;
+        xml::output_xml(
+            &mut config.output,
+            sub_rips,
+            config.use_timestamp,
+            event_name,
+        )?;
     }
     info!("end halberd");
     Ok(())
