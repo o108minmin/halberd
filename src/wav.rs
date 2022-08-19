@@ -1,7 +1,27 @@
 //! wavファイル関係のモジュール
+use std::boxed::Box;
+use std::fmt;
+use std::{error::Error, path::PathBuf};
+
+#[derive(Debug)]
+struct WavError(String);
+
+impl fmt::Display for WavError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "WavError: {}", self.0)
+    }
+}
+
+impl Error for WavError {}
+
 /// wavファイルの秒数を計算する
 /// * `reader` - 秒数を計算したいhoundのwav reader.
-pub fn calculate_wave_seconds(reader: &hound::WavReader<std::io::BufReader<std::fs::File>>) -> f64 {
+pub fn calculate_wave_seconds(path: PathBuf) -> Result<f64, Box<dyn Error>> {
+    let reader = match hound::WavReader::open(path) {
+        Ok(f) => f,
+        Err(_) => return Err(Box::new(WavError("can't open wav file".into()))),
+    };
+    //let reader = hound::WavReader::open(path).unwrap_or(10);
     debug!("input duration: {}", reader.duration());
     debug!("input sampling rate: {}", reader.spec().sample_rate);
     debug!(
@@ -9,7 +29,7 @@ pub fn calculate_wave_seconds(reader: &hound::WavReader<std::io::BufReader<std::
         reader.duration(),
         reader.spec().sample_rate
     );
-    reader.duration() as f64 / reader.spec().sample_rate as f64
+    Ok(reader.duration() as f64 / reader.spec().sample_rate as f64)
 }
 
 #[cfg(test)]
@@ -38,10 +58,18 @@ mod tests {
             writer.write_sample((sample * amplitude) as i16).unwrap();
         }
         writer.finalize().unwrap();
-        let input_path = hound::WavReader::open(input.to_str().unwrap()).unwrap();
-        let result = calculate_wave_seconds(&input_path);
-        assert_eq!(result, expected as f64);
-        drop(input);
+        let result = calculate_wave_seconds(input);
+        assert_eq!(result.unwrap(), expected as f64);
+        dir.close().unwrap();
+    }
+
+    #[test]
+    /// 入力値が異常だったとき(wavファイルが存在しない)
+    fn error_notfound() {
+        let dir = tempdir().unwrap();
+        let input = dir.path().join("test.wav");
+        let result = calculate_wave_seconds(input);
+        assert!(result.is_err());
         dir.close().unwrap();
     }
 }
