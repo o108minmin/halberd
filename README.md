@@ -3,7 +3,7 @@
 halberdはTTS(Text To Speech)ソフトウェアのファイルから字幕(srt, xml)を生成するCLIツールです
 
 <p align="center">
-   <img src="./docs/logo.png" alt="log" width="300px">
+   <img src="./docs/logo_2048.png" alt="logo" width="300px">
 </p>
 
 <!-- # Badges -->
