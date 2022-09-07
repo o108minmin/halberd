@@ -9,7 +9,7 @@ use predicates::prelude::*;
 fn normal_coefont() -> Result<(), Box<dyn std::error::Error>> {
     let expected = "1\n00:00:00,000 --> 00:00:03,499\n私はだみーです。よろしくお願いします。\n\n2\n00:00:03,500 --> 00:00:04,475\nこんにちわ\n\n";
 
-    let mut cmd = Command::cargo_bin("halberd").unwrap();
+    let mut cmd = Command::cargo_bin("cli").unwrap();
     let assert = cmd.arg("coefont").arg("tests/data/tts/coefont").assert();
     assert.success().stdout(predicate::str::contains(expected));
     Ok(())
@@ -20,7 +20,7 @@ fn normal_coefont() -> Result<(), Box<dyn std::error::Error>> {
 fn normal_coefont_srt_file() -> Result<(), Box<dyn std::error::Error>> {
     let expected = "1\n00:00:00,000 --> 00:00:03,499\n私はだみーです。よろしくお願いします。\n\n2\n00:00:03,500 --> 00:00:04,475\nこんにちわ\n\n";
 
-    let mut cmd = Command::cargo_bin("halberd").unwrap();
+    let mut cmd = Command::cargo_bin("cli").unwrap();
     let assert = cmd
         .arg("coefont")
         .arg("tests/data/tts/coefont")
@@ -37,7 +37,7 @@ fn normal_coefont_srt_file() -> Result<(), Box<dyn std::error::Error>> {
 fn normal_coefont_xml_stdout() -> Result<(), Box<dyn std::error::Error>> {
     let expected = fs::read_to_string("tests/data/xml/normal_coefont_xml.xml").unwrap();
 
-    let mut cmd = Command::cargo_bin("halberd").unwrap();
+    let mut cmd = Command::cargo_bin("cli").unwrap();
     let assert = cmd
         .arg("coefont")
         .arg("tests/data/tts/coefont")
@@ -52,7 +52,7 @@ fn normal_coefont_xml_stdout() -> Result<(), Box<dyn std::error::Error>> {
 fn normal_coefont_xml_file() -> Result<(), Box<dyn std::error::Error>> {
     let expected = fs::read_to_string("tests/data/xml/normal_coefont_xml.xml").unwrap();
 
-    let mut cmd = Command::cargo_bin("halberd").unwrap();
+    let mut cmd = Command::cargo_bin("cli").unwrap();
     let assert = cmd
         .arg("coefont")
         .arg("tests/data/tts/coefont")
@@ -70,7 +70,7 @@ fn normal_coefont_xml_file() -> Result<(), Box<dyn std::error::Error>> {
 fn normal_coefont_file_name_using_dirname() -> Result<(), Box<dyn std::error::Error>> {
     let expected = fs::read_to_string("tests/data/xml/normal_coefont_xml.xml").unwrap();
 
-    let mut cmd = Command::cargo_bin("halberd").unwrap();
+    let mut cmd = Command::cargo_bin("cli").unwrap();
     let assert = cmd
         .arg("coefont")
         .arg("tests/data/tts/coefont")
@@ -88,7 +88,7 @@ fn normal_coefont_file_name_using_dirname() -> Result<(), Box<dyn std::error::Er
 fn normal_coefont_xml_file_lazy() -> Result<(), Box<dyn std::error::Error>> {
     let expected = fs::read_to_string("tests/data/xml/normal_coefont_lazy_xml.xml").unwrap();
 
-    let mut cmd = Command::cargo_bin("halberd").unwrap();
+    let mut cmd = Command::cargo_bin("cli").unwrap();
     let assert = cmd
         .arg("coefont")
         .arg("tests/data/tts/coefont_lazy")
