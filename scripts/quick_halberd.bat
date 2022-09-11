@@ -40,5 +40,5 @@ if %file_name% == 1 (
 if %file_name% == 2 (
     set file_name="stdout"
 )
-.\halberd.exe %tts% %input% -f %format% -o %file_name% -t
+.\halberdcli.exe %tts% %input% -f %format% -o %file_name% -t
 pause

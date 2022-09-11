@@ -29,13 +29,11 @@ jobs:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             artifact_name: cli
-            bin_name: halberd
             asset_name: halberd-x86_64-unknown-linux-gnu
             quick_start: quick_halberd.sh
           - os: ubuntu-latest
             target: x86_64-pc-windows-gnu
-            artifact_name: cli.exe
-            bin_name: halberd.exe
+            artifact_name: halberdcli.exe
             asset_name: halberd-x86_64-pc-windows-gnu
             quick_start: quick_halberd.bat
     runs-on: ${{ matrix.os }}
@@ -56,13 +54,13 @@ jobs:
           args: --release --target ${{ matrix.target }} --all-features
       - name: Copy binary
         run: |
-          cp target/${{ matrix.target }}/release/${{ matrix.artifact_name }} ./${{ matrix.bin_name }}
+          cp target/${{ matrix.target }}/release/${{ matrix.artifact_name }} ./
       - name: Copy quick start scripts
         run: |
           cp scripts/${{ matrix.quick_start }} ./
       - name: Create zip
         run: |
-          zip ${{ matrix.asset_name }}.zip ${{ matrix.bin_name }} README.md ${{ matrix.quick_start }}
+          zip ${{ matrix.asset_name }}.zip ${{ matrix.artifact_name }} README.md ${{ matrix.quick_start }}
       - name: Upload Release Asset
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
