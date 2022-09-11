@@ -1,6 +1,6 @@
 [package]
 name = "halberdcli"
-version = "1.5.4"
+version = "1.5.5"
 edition = "2021"
 authors = [
 	"o108minmin <o108minmin@gmail.com>",
