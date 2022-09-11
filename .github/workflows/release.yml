@@ -56,7 +56,7 @@ jobs:
           args: --release --target ${{ matrix.target }} --all-features
       - name: Copy binary
         run: |
-          cp target/${{ matrix.target }}/release/${{ matrix.artifact_name }} ./{{ matrix.bin_name }}
+          cp target/${{ matrix.target }}/release/${{ matrix.artifact_name }} ./${{ matrix.bin_name }}
       - name: Copy quick start scripts
         run: |
           cp scripts/${{ matrix.quick_start }} ./
