@@ -4,7 +4,6 @@ use std::error::Error;
 use std::fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
-use std::process;
 
 use time::Duration;
 
@@ -25,15 +24,9 @@ extern crate log;
 pub fn run<W: Write>(config: &mut config::Config<W>) -> Result<(), Box<dyn Error>> {
     info!("start halberd");
     info!("input TTS: {}", &config.tts);
-    let swtp = service::select_tts_talk(&config.tts).unwrap_or_else(|err| {
-        error!("Problem selecting tts talk: {}", err);
-        process::exit(1);
-    });
+    let swtp = service::select_tts_talk(&config.tts)?;
     info!("input directory: {}", &config.dirname);
-    let dir = fs::read_dir(&config.dirname).unwrap_or_else(|err| {
-        error!("Problem reading directory: {}", err);
-        process::exit(1);
-    });
+    let dir = fs::read_dir(&config.dirname)?;
     info!("format: {}", &config.format);
     let mut sub_rips = vec![];
     let mut txts: Vec<std::path::PathBuf> = Vec::new();
