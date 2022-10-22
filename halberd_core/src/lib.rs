@@ -1,7 +1,7 @@
 //! cli gateway for halberd.
 use std::boxed::Box;
 use std::error::Error;
-use std::fs;
+use std::{fs, fmt};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
@@ -19,6 +19,16 @@ pub mod xml;
 
 #[macro_use]
 extern crate log;
+
+impl Error for HalberdError {}
+#[derive(Debug)]
+struct HalberdError(String);
+
+impl fmt::Display for HalberdError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "SrtError: {}", self.0)
+    }
+}
 
 /// Configを元にhalberdを実行する
 pub fn run<W: Write>(config: &mut config::Config<W>) -> Result<(), Box<dyn Error>> {
@@ -58,11 +68,13 @@ pub fn run<W: Write>(config: &mut config::Config<W>) -> Result<(), Box<dyn Error
     } else if &config.format == "xml" {
         // event名生成
         let path = Path::new(&config.dirname);
-        let dir_name = match path.file_name() {
-            None => panic!("Problem converting directory name"),
-            Some(s) => s,
-        };
-        let event_name = dir_name.to_os_string().into_string().unwrap();
+        let dir_name = path.file_name();
+        if dir_name.is_none() {
+            return Err(Box::new(HalberdError(
+                "Problem converting directory name".into(),
+            )));
+        }
+        let event_name = dir_name.unwrap().to_os_string().into_string().unwrap();
         xml::output_xml(
             &mut config.output,
             sub_rips,

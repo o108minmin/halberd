@@ -3,4 +3,5 @@
 members = [
     "halberd_core",
     "halberd_cli",
+    "halberd_gui/src-tauri",
 ]
