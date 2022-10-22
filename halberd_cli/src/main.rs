@@ -6,8 +6,7 @@ use std::fs;
 use std::io::stdout;
 use std::process;
 use std::path::Path;
-use core::run;
-use core::config;
+use halberd_core::{config, run};
 
 
 
