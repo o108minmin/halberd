@@ -6,10 +6,10 @@
 version: 2
 updates:
   - package-ecosystem: "cargo" # See documentation for possible values
-    directory: "/core" # Location of package manifests
+    directory: "/halberd_core" # Location of package manifests
     schedule:
       interval: "weekly"
   - package-ecosystem: "cargo" # See documentation for possible values
-    directory: "/cli" # Location of package manifests
+    directory: "/halberd_cli" # Location of package manifests
     schedule:
       interval: "weekly"
