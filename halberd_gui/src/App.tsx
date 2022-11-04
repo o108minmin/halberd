@@ -14,7 +14,6 @@ function App() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
 
-
   function openDir () {
     open({
       directory: true,
@@ -23,17 +22,26 @@ function App() {
   }
 
   function saveDir () {
-    save({
-      defaultPath: parseDirName(input),
-      filters: [{
-        name: "fcpxml",
-        extensions: ['xml']
-      },
-      {
-        name: "subtitle",
-        extensions: ['srt']
-      }]
-    }).then(files => setOutput(convertFilePath(files)))
+    const filters = [{
+      name: "fcpxml",
+      extensions: ['xml']
+    },
+    {
+      name: "subtitle",
+      extensions: ['srt']
+    }];
+    // Note: input前に開くと落ちることを防ぐ
+    if (input == "") {
+      save({
+        defaultPath: "output",
+        filters: filters,
+      }).then(files => setOutput(convertFilePath(files)))
+    } else {
+      save({
+        defaultPath: parseDirName(input),
+        filters: filters,
+      }).then(files => setOutput(convertFilePath(files)))
+    }
 }
 
   // inputDirArrayがstringの時だけその値を返す
