@@ -19,6 +19,8 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: check
+          args: --workspace --exclude halberd_gui
       - uses: actions-rs/cargo@v1
         with:
           command: clippy
+          args: --workspace --exclude halberd_gui
