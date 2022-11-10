@@ -5,6 +5,8 @@
 
 use halberd_core;
 use std::fs;
+use env_logger::Builder;
+use log::LevelFilter;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -17,11 +19,13 @@ fn halberd_run(input: &str ,output: &str ,tts: &str) -> String {
         output: handle,
         use_timestamp: true,
     };
+    let mut builder = Builder::from_default_env();
+    builder.filter_level(LevelFilter::Debug).init();
+
     match halberd_core::run(&mut config) {
         Ok(_) => format!("done"),
         Err(e) => format!("error: {}", e)
     }
-    
 }
 
 fn parse_output_extension(output: &str) -> String {
