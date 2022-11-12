@@ -3,7 +3,8 @@
     windows_subsystem = "windows"
 )]
 
-use halberd_core;
+use halberd_core::run;
+use halberd_core::config::Config;
 use std::fs;
 use env_logger::Builder;
 use log::LevelFilter;
@@ -12,25 +13,26 @@ use log::LevelFilter;
 #[tauri::command]
 fn halberd_run(input: &str ,output: &str ,tts: &str) -> String {
     let handle = fs::File::create(output).unwrap();
-    let mut config = halberd_core::config::Config {
+    let mut config = Config {
         tts: tts.to_string(),
         dirname: input.to_string(),
         format: parse_output_extension(output),
         output: handle,
-        use_timestamp: true,
+        // FIXME: macで動かないので一時的に停止
+        use_timestamp: false,
     };
     let mut builder = Builder::from_default_env();
     builder.filter_level(LevelFilter::Debug).init();
 
-    match halberd_core::run(&mut config) {
-        Ok(_) => format!("done"),
+    match run(&mut config) {
+        Ok(_) => format!("done input: {}", input),
         Err(e) => format!("error: {}", e)
     }
 }
 
 fn parse_output_extension(output: &str) -> String {
     let v: Vec<&str> = output.split('.').collect();
-    return v[v.len() -1].to_string();
+    v[v.len() -1].to_string()
 }
 
 fn main() {
