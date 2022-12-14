@@ -4,9 +4,9 @@ import Button from '@mui/material/Button';
 import { FormControl, Grid, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, styled, Typography } from "@mui/material";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { open, save } from '@tauri-apps/api/dialog'
-import { appDir } from '@tauri-apps/api/path';
+import { homeDir } from '@tauri-apps/api/path';
 
-const currentDir = await appDir();
+const home = await homeDir();
 
 function App() {
   const [logMsg, setLogMsg] = useState("");
@@ -17,7 +17,7 @@ function App() {
   function openDir () {
     open({
       directory: true,
-      defaultPath: currentDir,
+      defaultPath: home,
     }).then(files => setInput(convertFilePath(files)));
   }
 
