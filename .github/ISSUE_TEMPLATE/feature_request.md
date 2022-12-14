@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+about: 新規機能追加, リファクタリングの提案など
 title: ''
 labels: enhancement
 assignees: o108minmin
