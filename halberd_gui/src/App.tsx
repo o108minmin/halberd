@@ -70,6 +70,7 @@ function App() {
 
   async function halberd_run() {
     // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
+    setLogMsg("starting...")
     console.info("input: %s", input)
     console.info("output: %s", output)
     console.info("tts: %s", tts)
