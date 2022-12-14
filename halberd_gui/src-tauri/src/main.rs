@@ -21,9 +21,6 @@ fn halberd_run(input: &str ,output: &str ,tts: &str) -> String {
         // FIXME: macで動かないので一時的に停止
         use_timestamp: false,
     };
-    let mut builder = Builder::from_default_env();
-    builder.filter_level(LevelFilter::Debug).init();
-
     match run(&mut config) {
         Ok(_) => format!("done input: {}", input),
         Err(e) => format!("error: {}", e)
@@ -36,6 +33,8 @@ fn parse_output_extension(output: &str) -> String {
 }
 
 fn main() {
+    let mut builder = Builder::from_default_env();
+    builder.filter_level(LevelFilter::Debug).init();
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![halberd_run])
         .run(tauri::generate_context!())
