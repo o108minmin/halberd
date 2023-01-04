@@ -49,7 +49,7 @@ fn main() {
                 .help("output format")
                 .required(false)
                 .default_value("srt")
-                .value_parser(["srt", "xml"]),
+                .value_parser(["srt", "xml", "fcpxml"]),
         )
         .arg(
             Arg::new("use-timestamp")

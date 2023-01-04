@@ -65,7 +65,7 @@ pub fn run<W: Write>(config: &mut config::Config<W>) -> Result<(), Box<dyn Error
 
     if &config.format == "srt" {
         srt::output_srt(&mut config.output, sub_rips)?;
-    } else if &config.format == "xml" {
+    } else if &config.format == "xml" || &config.format == "fcpxml" {
         // event名生成
         let path = Path::new(&config.dirname);
         let dir_name = path.file_name();
