@@ -24,7 +24,7 @@ function App() {
   function saveDir () {
     const filters = [{
       name: "fcpxml",
-      extensions: ['xml']
+      extensions: ['fcpxml']
     },
     {
       name: "subtitle",

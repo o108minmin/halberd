@@ -49,7 +49,8 @@ pub fn output_xml<W: Write>(
 
     let effect_s = XmlEvent::start_element("effect")
         .attr("id", "r2")
-        .attr("name", "text");
+        .attr("name", "text")
+        .attr("uid", ".../Titles.localized/Build In:Out.localized/Custom.localized/Custom.moti");
     writer.write(effect_s).unwrap();
 
     let effect_e = XmlEvent::end_element();
@@ -80,21 +81,6 @@ pub fn output_xml<W: Write>(
     let spine_s = XmlEvent::start_element("spine");
     writer.write(spine_s).unwrap();
 
-    let text_style_def_s = XmlEvent::start_element("text-style-def").attr("id", "ts1");
-    writer.write(text_style_def_s).unwrap();
-
-    let text_style_s = XmlEvent::start_element("text-style")
-        .attr("font", "Helvetica")
-        .attr("fontSize", "72")
-        .attr("fontFace", "Regular")
-        .attr("fontColor", "1 0.999974 0.999991 1")
-        .attr("alignment", "center");
-    writer.write(text_style_s).unwrap();
-    let text_style_e = XmlEvent::end_element();
-    writer.write(text_style_e).unwrap();
-    let text_style_def_e = XmlEvent::end_element();
-    writer.write(text_style_def_e).unwrap();
-
     // 字幕
     let mut cursor = Duration::milliseconds(0);
     let mut counter = 1;
@@ -120,6 +106,22 @@ pub fn output_xml<W: Write>(
         writer.write(text_style_e).unwrap();
         let text_e = XmlEvent::end_element();
         writer.write(text_e).unwrap();
+
+        if counter == 1 {
+            let text_style_def_s = XmlEvent::start_element("text-style-def").attr("id", "ts1");
+            writer.write(text_style_def_s).unwrap();
+            let text_style_s = XmlEvent::start_element("text-style")
+                .attr("font", "Helvetica")
+                .attr("fontSize", "72")
+                .attr("fontFace", "Regular")
+                .attr("fontColor", "1 0.999974 0.999991 1")
+                .attr("alignment", "center");
+            writer.write(text_style_s).unwrap();
+            let text_style_e = XmlEvent::end_element();
+            writer.write(text_style_e).unwrap();
+            let text_style_def_e = XmlEvent::end_element();
+            writer.write(text_style_def_e).unwrap();
+        }
 
         let title_e = XmlEvent::end_element();
         writer.write(title_e).unwrap();
