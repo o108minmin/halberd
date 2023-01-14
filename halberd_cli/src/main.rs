@@ -1,14 +1,12 @@
 use clap::Arg;
 use clap::ArgAction;
 use env_logger::Builder;
+use halberd_core::{config, run};
 use log::LevelFilter;
 use std::fs;
 use std::io::stdout;
-use std::process;
 use std::path::Path;
-use halberd_core::{config, run};
-
-
+use std::process;
 
 #[macro_use]
 extern crate log;

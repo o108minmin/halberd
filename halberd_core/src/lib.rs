@@ -1,9 +1,9 @@
 //! cli gateway for halberd.
 use std::boxed::Box;
 use std::error::Error;
-use std::{fs, fmt};
 use std::io::Write;
 use std::path::{Path, PathBuf};
+use std::{fmt, fs};
 
 use time::Duration;
 
