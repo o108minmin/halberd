@@ -50,7 +50,10 @@ pub fn output_xml<W: Write>(
     let effect_s = XmlEvent::start_element("effect")
         .attr("id", "r2")
         .attr("name", "text")
-        .attr("uid", ".../Titles.localized/Build In:Out.localized/Custom.localized/Custom.moti");
+        .attr(
+            "uid",
+            ".../Titles.localized/Build In:Out.localized/Custom.localized/Custom.moti",
+        );
     writer.write(effect_s).unwrap();
 
     let effect_e = XmlEvent::end_element();

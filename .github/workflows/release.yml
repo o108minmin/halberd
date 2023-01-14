@@ -41,22 +41,16 @@ jobs:
     needs: release
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
+        uses: actions/checkout@v3
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
-          override: true
+          target: ${{ matrix.target }}
       - name: install dependencies (ubuntu only)
         run: |
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
-      - name: Cross build with all features Build project
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: true
-          command: build
-          args: --release --target ${{ matrix.target }} --all-features --workspace --exclude halberd_gui
+      - run: cargo build --release --target ${{ matrix.target }} --all-features --workspace --exclude halberd_gui
       - name: Copy binary
         run: |
           cp target/${{ matrix.target }}/release/${{ matrix.artifact_name }} ./
@@ -87,7 +81,7 @@ jobs:
       run:
         shell: bash
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: setup node
       uses: actions/setup-node@v1
       with:

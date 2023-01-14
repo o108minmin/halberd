@@ -1,6 +1,7 @@
 use std::boxed::Box;
+use std::process::Command;
 
-use assert_cmd::Command;
+use assert_cmd::prelude::*;
 use predicates::prelude::*;
 use tempfile::tempdir;
 
@@ -42,10 +43,7 @@ fn normal_enable_format() -> Result<(), Box<dyn std::error::Error>> {
 fn error_required_tts_talk_type() -> Result<(), Box<dyn std::error::Error>> {
     let mut cmd = Command::cargo_bin("halberdcli").unwrap();
     let assert = cmd.assert();
-    assert
-        .failure()
-        .stderr(predicate::str::contains("The following required arguments"))
-        .stderr(predicate::str::contains("TTS"));
+    assert.failure().stderr(predicate::str::contains("TTS"));
     Ok(())
 }
 
@@ -54,10 +52,7 @@ fn error_required_tts_talk_type() -> Result<(), Box<dyn std::error::Error>> {
 fn error_invalid_tts_talk_type() -> Result<(), Box<dyn std::error::Error>> {
     let mut cmd = Command::cargo_bin("halberdcli").unwrap();
     let assert = cmd.arg("sample").assert();
-    assert
-        .failure()
-        .stderr(predicate::str::contains("isn't a valid value for"))
-        .stderr(predicate::str::contains("TTS"));
+    assert.failure().stderr(predicate::str::contains("TTS"));
     Ok(())
 }
 

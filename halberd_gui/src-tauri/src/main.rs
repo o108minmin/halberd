@@ -3,15 +3,15 @@
     windows_subsystem = "windows"
 )]
 
-use halberd_core::run;
-use halberd_core::config::Config;
-use std::fs;
 use env_logger::Builder;
+use halberd_core::config::Config;
+use halberd_core::run;
 use log::LevelFilter;
+use std::fs;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-fn halberd_run(input: &str ,output: &str ,tts: &str) -> String {
+fn halberd_run(input: &str, output: &str, tts: &str) -> String {
     let handle = fs::File::create(output).unwrap();
     let mut config = Config {
         tts: tts.to_string(),
@@ -23,13 +23,13 @@ fn halberd_run(input: &str ,output: &str ,tts: &str) -> String {
     };
     match run(&mut config) {
         Ok(_) => format!("done input: {}", input),
-        Err(e) => format!("error: {}", e)
+        Err(e) => format!("error: {}", e),
     }
 }
 
 fn parse_output_extension(output: &str) -> String {
     let v: Vec<&str> = output.split('.').collect();
-    v[v.len() -1].to_string()
+    v[v.len() - 1].to_string()
 }
 
 fn main() {
