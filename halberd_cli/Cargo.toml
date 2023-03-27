@@ -16,5 +16,5 @@ halberd_core = {path = "../halberd_core"}
 
 [dev-dependencies]
 assert_cmd = "2.0.7"
-predicates = "2.1.5"
+predicates = "3.0.2"
 tempfile = "3"
