@@ -59,4 +59,4 @@ Copyright (c) 2021 o108minmin
 
 # Contributors
 
-- [o108minmin](https://github.com/o108minmin)
+- [o108minmin](https://github.com/o108minmin) / selfmiso
