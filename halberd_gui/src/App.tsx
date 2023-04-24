@@ -140,6 +140,7 @@ function App() {
                   variant={"outlined"}
                   onChange={handleTtsChange}
                 >
+                  <MenuItem value={"aivoice"}>A.I.VOICE(utf-8)</MenuItem>
                   <MenuItem value={"voiceroid"}>VOICEROID(Shift_JIS)</MenuItem>
                   <MenuItem value={"coefont"}>CoeFont(utf-8)</MenuItem>
                   <MenuItem value={"voicevox"}>VOICEVOX(utf-8)</MenuItem>
