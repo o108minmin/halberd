@@ -21,6 +21,9 @@ halberdはTTS(Text To Speech)ソフトウェアのファイルから字幕(srt, 
 - [VOICEVOX](https://voicevox.hiroshiba.jp/)
 - [SofTalk](https://w.atwiki.jp/softalk/)
 - [TALQu](https://booth.pm/ja/items/2755336ls)
+- [VOICEPEAK](https://www.ah-soft.com/voice/)
+- [A.I.VOICE](https://aivoice.jp/)
+- [CeVIO AI](https://cevio.jp/)
 
 halberdは上記TTSの権利を有する方々とは関係ない非公式のものになります
 
