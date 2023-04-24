@@ -3,6 +3,7 @@ use crate::tts::coefont::CoeFont;
 use crate::tts::profile;
 use crate::tts::softalk::Softalk;
 use crate::tts::talqu::Talqu;
+use crate::tts::voicepeak::Voicepeak;
 use crate::tts::voiceroid::Voiceroid;
 use crate::tts::voicevox::Voicevox;
 
@@ -16,6 +17,7 @@ pub fn select_tts_talk(profile_name: &str) -> Result<Box<dyn profile::TTS>, &'st
         "voicevox" => Ok(Box::new(Voicevox {})),
         "softalk" => Ok(Box::new(Softalk {})),
         "talqu" => Ok(Box::new(Talqu {})),
+        "voicepeak" => Ok(Box::new(Voicepeak {})),
         _ => Err("Didn't match profile name"),
     }
 }
