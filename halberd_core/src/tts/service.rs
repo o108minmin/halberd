@@ -1,4 +1,5 @@
 //! TTS関係の雑多な関数
+use crate::tts::aivoice::Aivoice;
 use crate::tts::coefont::CoeFont;
 use crate::tts::profile;
 use crate::tts::softalk::Softalk;
@@ -18,6 +19,7 @@ pub fn select_tts_talk(profile_name: &str) -> Result<Box<dyn profile::TTS>, &'st
         "softalk" => Ok(Box::new(Softalk {})),
         "talqu" => Ok(Box::new(Talqu {})),
         "voicepeak" => Ok(Box::new(Voicepeak {})),
+        "aivoice" => Ok(Box::new(Aivoice {})),
         _ => Err("Didn't match profile name"),
     }
 }
