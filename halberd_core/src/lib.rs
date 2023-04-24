@@ -36,7 +36,15 @@ pub fn run<W: Write>(config: &mut config::Config<W>) -> Result<(), Box<dyn Error
     info!("input TTS: {}", &config.tts);
     let swtp = service::select_tts_talk(&config.tts)?;
     info!("input directory: {}", &config.dirname);
-    let dir = fs::read_dir(&config.dirname)?;
+    let dir = fs::read_dir(&config.dirname);
+    let dir = match dir {
+        Ok(dir) => dir,
+        Err(_error) => {
+            return Err(Box::new(HalberdError(
+                "Problem opening input directory".into(),
+            )))
+        }
+    };
     info!("format: {}", &config.format);
     let mut sub_rips = vec![];
     let mut txts: Vec<std::path::PathBuf> = Vec::new();

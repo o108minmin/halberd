@@ -63,7 +63,7 @@ fn error_input_not_found() -> Result<(), Box<dyn std::error::Error>> {
     let assert = cmd.arg("coefont").arg("./notfound").assert();
     assert
         .failure()
-        .stderr(predicate::str::contains("No such file or directory"));
+        .stderr(predicate::str::contains("Problem opening input directory"));
     Ok(())
 }
 
@@ -78,6 +78,6 @@ fn error_output_not_found() -> Result<(), Box<dyn std::error::Error>> {
         .assert();
     assert
         .failure()
-        .stderr(predicate::str::contains("No such file or directory"));
+        .stderr(predicate::str::contains("Problem can\'t open file:"));
     Ok(())
 }
