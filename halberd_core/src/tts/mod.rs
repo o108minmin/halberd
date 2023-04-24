@@ -1,4 +1,5 @@
 pub mod aivoice;
+pub mod cevioai;
 pub mod coefont;
 pub mod profile;
 pub mod service;

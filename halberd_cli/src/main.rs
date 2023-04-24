@@ -22,7 +22,7 @@ fn main() {
             Arg::new("TTS")
                 .help("set TTS")
                 .required(true)
-                .value_parser(["voiceroid", "coefont", "voicevox", "softalk", "talqu", "voicepeak", "aivoice"])
+                .value_parser(["voiceroid", "coefont", "voicevox", "softalk", "talqu", "voicepeak", "aivoice", "cevioai"])
                 .index(1),
         )
         .arg(

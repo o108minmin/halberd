@@ -147,6 +147,7 @@ function App() {
                   <MenuItem value={"softalk"}>SofTalk(utf-16le)</MenuItem>
                   <MenuItem value={"talque"}>TALQu(Shift_JIS)</MenuItem>
                   <MenuItem value={"voicepeak"}>VOICEPEAK(utf-8)</MenuItem>
+                  <MenuItem value={"cevioai"}>CeVIO AI(utf-8)</MenuItem>
                 </Select>
               </FormControl>
           </Grid>
