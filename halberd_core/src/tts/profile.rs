@@ -3,6 +3,8 @@ use std::error::Error;
 use std::path::PathBuf;
 
 pub trait TTS {
+    // 事前処理
+    fn setup(&self, path: PathBuf) -> Result<(), Box<dyn Error>>;
     // セリフの生成に使う関数
     fn serif_generator(&self, path: PathBuf) -> Result<String, Box<dyn Error>>;
     // wavファイルの秒数計算に使う関数

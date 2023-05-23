@@ -10,6 +10,9 @@ use crate::wav;
 pub struct Softalk {}
 
 impl tts::profile::TTS for Softalk {
+    fn setup(&self, _path: PathBuf) -> Result<(), Box<dyn Error>> {
+        Ok(())
+    }
     fn serif_generator(&self, path: PathBuf) -> Result<String, Box<dyn Error>> {
         text::generate_subtitle_from_txt_utf_16le(path)
     }

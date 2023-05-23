@@ -9,6 +9,9 @@ use crate::wav;
 pub struct Voicepeak {}
 
 impl tts::profile::TTS for Voicepeak {
+    fn setup(&self, _path: PathBuf) -> Result<(), Box<dyn Error>> {
+        Ok(())
+    }
     fn serif_generator(&self, path: PathBuf) -> Result<String, Box<dyn Error>> {
         text::generate_subtitle_from_txt(path)
     }
