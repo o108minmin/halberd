@@ -45,6 +45,9 @@ pub fn run<W: Write>(config: &mut config::Config<W>) -> Result<(), Box<dyn Error
             )))
         }
     };
+    info!("exec setup");
+    swtp.setup(PathBuf::from(&config.dirname))?;
+
     info!("format: {}", &config.format);
     let mut sub_rips = vec![];
     let mut txts: Vec<std::path::PathBuf> = Vec::new();
