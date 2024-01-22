@@ -11,7 +11,7 @@ repository = "https://github.com/o108minmin/halberd"
 [dependencies]
 clap = "4.0.8"
 log = "0.4.16"
-env_logger = "0.10.0"
+env_logger = "0.11.0"
 halberd_core = {path = "../halberd_core"}
 
 [dev-dependencies]
