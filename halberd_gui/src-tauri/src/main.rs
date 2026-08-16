@@ -35,7 +35,9 @@ fn main() {
     let mut builder = Builder::from_default_env();
     builder.filter_level(LevelFilter::Debug).init();
     tauri::Builder::default()
+        .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![halberd_run])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

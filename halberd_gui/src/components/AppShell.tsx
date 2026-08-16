@@ -1,10 +1,8 @@
 import type { ReactNode } from "react";
-import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import SubtitlesRoundedIcon from "@mui/icons-material/SubtitlesRounded";
 import {
-  Avatar,
   Box,
   ButtonBase,
   Chip,
@@ -12,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import type { MenuId } from "../App";
+import { halberdLogo } from "../assets";
 
 type AppShellProps = {
   activeMenu: MenuId;
@@ -53,9 +52,12 @@ export function AppShell({ activeMenu, children, onMenuChange }: AppShellProps) 
     <Box className="app-shell">
       <Box component="aside" className="sidebar">
         <Stack className="brand" direction="row" spacing={1.5} alignItems="center">
-          <Avatar className="brand__mark">
-            <AutoAwesomeRoundedIcon fontSize="small" />
-          </Avatar>
+          <Box
+            alt="halberd"
+            className="brand__mark"
+            component="img"
+            src={halberdLogo}
+          />
           <Box>
             <Typography className="brand__name">halberd</Typography>
             <Typography className="brand__caption">Subtitle Studio</Typography>

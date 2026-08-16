@@ -21,9 +21,17 @@ export const theme = createTheme({
     borderRadius: 16,
   },
   typography: {
-    fontFamily: '"Roboto", "Noto Sans JP", sans-serif',
+    fontFamily:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif',
+    body1: {
+      lineHeight: 1.75,
+    },
+    body2: {
+      lineHeight: 1.7,
+    },
     button: {
       fontWeight: 700,
+      letterSpacing: "0.015em",
       textTransform: "none",
     },
   },

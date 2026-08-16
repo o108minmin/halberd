@@ -57,12 +57,13 @@ input {
   padding: 0 8px;
 }
 
-.brand__mark.MuiAvatar-root {
+.brand__mark {
   width: 42px;
   height: 42px;
-  color: #fff;
-  background: linear-gradient(145deg, #8b7cff, #5545d7);
-  box-shadow: 0 10px 28px rgba(124, 108, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 10px 28px rgba(105, 186, 201, 0.2);
 }
 
 .brand__name.MuiTypography-root {
@@ -130,15 +131,17 @@ input {
 }
 
 .nav-item__label.MuiTypography-root {
-  font-size: 0.86rem;
+  font-size: 0.88rem;
   font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .nav-item__description.MuiTypography-root {
   margin-top: 2px;
   overflow: hidden;
   color: #626b80;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
+  line-height: 1.55;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -218,14 +221,6 @@ input {
   font-weight: 600;
 }
 
-.workspace-header__title.MuiTypography-root {
-  margin-top: 22px;
-  font-size: clamp(2rem, 3.7vw, 3.2rem);
-  font-weight: 700;
-  line-height: 1.14;
-  letter-spacing: -0.045em;
-}
-
 .workspace-header__lead.MuiTypography-root {
   max-width: 690px;
   margin-top: 14px;
@@ -258,8 +253,12 @@ input {
   content: "";
 }
 
-.workspace-header__decoration svg {
-  font-size: 2.25rem;
+.workspace-header__decoration img {
+  width: 58px;
+  height: 58px;
+  border-radius: 17px;
+  object-fit: cover;
+  box-shadow: 0 14px 38px rgba(105, 186, 201, 0.14);
   transform: rotate(-8deg);
 }
 
@@ -308,17 +307,38 @@ input {
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.05em;
+  transition: 180ms ease;
+}
+
+.step-heading__number svg {
+  font-size: 1.15rem;
+}
+
+.step-heading--complete .step-heading__number {
+  color: #42d3a5;
+  border-color: rgba(66, 211, 165, 0.22);
+  background: rgba(66, 211, 165, 0.08);
+  box-shadow: 0 0 18px rgba(66, 211, 165, 0.08);
 }
 
 .step-heading__title.MuiTypography-root {
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .step-heading__description.MuiTypography-root {
   margin-top: 2px;
   color: #6f788d;
-  font-size: 0.72rem;
+  font-size: 0.74rem;
+  line-height: 1.6;
+}
+
+.step-heading__complete-label.MuiTypography-root {
+  color: #42d3a5;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
 }
 
 .tts-select.MuiInputBase-root {
@@ -410,8 +430,9 @@ input {
 .path-selector__value.MuiTypography-root {
   margin-top: 3px;
   overflow: hidden;
-  font-size: 0.83rem;
+  font-size: 0.85rem;
   font-weight: 700;
+  letter-spacing: 0.005em;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -420,7 +441,8 @@ input {
   margin-top: 2px;
   overflow: hidden;
   color: #626c81;
-  font-size: 0.67rem;
+  font-size: 0.7rem;
+  line-height: 1.55;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -429,7 +451,7 @@ input {
   flex: 0 0 auto;
   border-color: rgba(255, 255, 255, 0.1);
   color: #cdd3df;
-  font-size: 0.72rem;
+  font-size: 0.74rem;
 }
 
 .format-switch.MuiToggleButtonGroup-root {
@@ -485,7 +507,7 @@ input {
   margin-top: 5px;
   font-size: 1.15rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.005em;
 }
 
 .summary-row {
@@ -556,15 +578,16 @@ input {
 }
 
 .status-banner__title.MuiTypography-root {
-  font-size: 0.73rem;
+  font-size: 0.76rem;
   font-weight: 700;
+  letter-spacing: 0.005em;
 }
 
 .status-banner__message.MuiTypography-root {
   margin-top: 3px;
   color: #657087;
-  font-size: 0.64rem;
-  line-height: 1.45;
+  font-size: 0.68rem;
+  line-height: 1.6;
 }
 
 .status-banner--running .status-banner__icon,
@@ -596,9 +619,37 @@ input {
   animation: spin 1.2s linear infinite;
 }
 
+.success-actions {
+  padding: 14px;
+  border: 1px solid rgba(66, 211, 165, 0.12);
+  border-radius: 14px;
+  background: rgba(66, 211, 165, 0.025);
+}
+
+.success-actions__label.MuiTypography-root {
+  color: #4fae91;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.success-actions .MuiButton-root {
+  min-height: 39px;
+  border-color: rgba(255, 255, 255, 0.09);
+  color: #c8cfdd;
+  font-size: 0.72rem;
+}
+
+.success-actions .MuiButton-outlined {
+  color: #69dbb8;
+  border-color: rgba(66, 211, 165, 0.19);
+  background: rgba(66, 211, 165, 0.04);
+}
+
 .generate-button.MuiButton-root {
   min-height: 52px;
   color: #fff;
+  font-size: 0.88rem;
   background: linear-gradient(105deg, #7867f5, #8c7dff);
   box-shadow: 0 15px 34px rgba(105, 88, 227, 0.24);
 }
@@ -618,6 +669,10 @@ input {
   color: #515a6d;
   font-size: 0.62rem;
   text-align: center;
+}
+
+.summary-panel__hint--missing.MuiTypography-root {
+  color: #9a8290;
 }
 
 @keyframes spin {
