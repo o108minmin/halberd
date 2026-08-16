@@ -22,7 +22,9 @@ node_modules
 dist
 dist-ssr
 !halberd_gui/dist/
+halberd_gui/dist/*
 !halberd_gui/dist/index.html
+halberd_gui/src-tauri/gen/
 *.local
 
 # Editor directories and files

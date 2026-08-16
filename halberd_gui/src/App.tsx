@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@tauri-apps/api/core";
 import Button from '@mui/material/Button';
 import { FormControl, Grid, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, styled, Typography } from "@mui/material";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { open, save } from '@tauri-apps/api/dialog'
+import { open, save } from '@tauri-apps/plugin-dialog'
 import { homeDir } from '@tauri-apps/api/path';
 
 const home = await homeDir();
@@ -69,7 +69,7 @@ function App() {
   }
 
   async function halberd_run() {
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
+    // Learn more about Tauri commands at https://v2.tauri.app/develop/calling-rust/
     setLogMsg("starting...")
     console.info("input: %s", input)
     console.info("output: %s", output)
