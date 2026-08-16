@@ -48,10 +48,12 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 760,
+        "minHeight": 680,
+        "minWidth": 980,
         "resizable": true,
         "title": "halberd-gui",
-        "width": 800,
+        "width": 1180,
         "useHttpsScheme": true
       }
     ],
