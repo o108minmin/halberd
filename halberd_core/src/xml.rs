@@ -5,7 +5,8 @@ use std::fmt;
 use std::io::Write;
 use std::result::Result;
 
-use time::{format_description, Duration, OffsetDateTime};
+use time::{Duration, OffsetDateTime, format_description};
+use xml::common::XmlVersion;
 use xml::writer::{EmitterConfig, XmlEvent};
 
 use crate::unitsubrip::UnitSubRip;
@@ -30,7 +31,15 @@ pub fn output_xml<W: Write>(
 ) -> Result<(), Box<dyn Error>> {
     info!("Print UnitSubRips");
     debug!("input vec length: {}", vec.len());
-    let mut writer = EmitterConfig::new().perform_indent(true).create_writer(w);
+    let mut writer = EmitterConfig::new()
+        .perform_indent(true)
+        .write_document_declaration(false)
+        .create_writer(w);
+    writer.write(XmlEvent::StartDocument {
+        version: XmlVersion::Version10,
+        encoding: Some("utf-8"),
+        standalone: None,
+    })?;
     let s = XmlEvent::start_element("fcpxml").attr("version", "1.8");
     writer.write(s).unwrap();
     let resources_s = XmlEvent::start_element("resources");
@@ -67,7 +76,9 @@ pub fn output_xml<W: Write>(
     let mut event = event_name;
     if use_timestamp {
         let now = OffsetDateTime::now_local()?;
-        let format = format_description::parse("-[year]-[month]-[day]-[hour]-[minute]-[second]")?;
+        let format = format_description::parse_borrowed::<1>(
+            "-[year]-[month]-[day]-[hour]-[minute]-[second]",
+        )?;
         let timestamp = now.format(&format)?;
         event += timestamp.as_str();
     }

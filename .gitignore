@@ -21,6 +21,8 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+!halberd_gui/dist/
+!halberd_gui/dist/index.html
 *.local
 
 # Editor directories and files

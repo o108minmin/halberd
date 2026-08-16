@@ -5,8 +5,8 @@ use std::fmt;
 use std::io::Write;
 use std::result::Result;
 
-use time::macros::format_description;
 use time::Duration;
+use time::macros::format_description;
 
 use crate::unitsubrip::UnitSubRip;
 

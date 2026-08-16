@@ -42,7 +42,7 @@ pub fn run<W: Write>(config: &mut config::Config<W>) -> Result<(), Box<dyn Error
         Err(_error) => {
             return Err(Box::new(HalberdError(
                 "Problem opening input directory".into(),
-            )))
+            )));
         }
     };
     info!("exec setup");
