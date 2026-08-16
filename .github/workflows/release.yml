@@ -1,105 +1,162 @@
-name: release
+name: Release
+
 on:
   push:
     tags:
-    - "v*"
+      - "v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  release:
-    name: Create release
-    runs-on: ubuntu-latest
+  prepare:
+    name: Prepare draft release
+    runs-on: ubuntu-24.04
     outputs:
-      upload_url: ${{ steps.release.outputs.upload_url }}
       release_id: ${{ steps.release.outputs.id }}
     steps:
-      - name: Create Release
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+      - name: Verify release version
+        run: |
+          app_version=$(node -p "require('./halberd_gui/package.json').version")
+          workspace_version=$(sed -n 's/^version = "\([^"]*\)"/\1/p' Cargo.toml | head -n 1)
+          test "$app_version" = "$workspace_version"
+          test "$GITHUB_REF_NAME" = "v$app_version"
+      - name: Create draft release
         id: release
-        uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-  build:
-    name: Build and Upload Release Asset
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            artifact_name: halberdcli
-            asset_name: halberd-x86_64-unknown-linux-gnu
-            quick_start: quick_halberd.sh
-          - os: ubuntu-latest
-            target: x86_64-pc-windows-gnu
-            artifact_name: halberdcli.exe
-            asset_name: halberd-x86_64-pc-windows-gnu
-            quick_start: quick_halberd.bat
-    runs-on: ${{ matrix.os }}
-    needs: release
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          toolchain: stable
-      - name: install dependencies (ubuntu only)
+          GH_TOKEN: ${{ github.token }}
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
-      - run: cargo install cross --git https://github.com/cross-rs/cross
-      - run: cross build --release --target ${{ matrix.target }} --all-features --workspace --exclude halberd_gui
-      - name: Copy binary
-        run: |
-          cp target/${{ matrix.target }}/release/${{ matrix.artifact_name }} ./
-      - name: Copy quick start scripts
-        run: |
-          cp scripts/${{ matrix.quick_start }} ./
-      - name: Create zip
-        run: |
-          zip ${{ matrix.asset_name }}.zip ${{ matrix.artifact_name }} README.md ${{ matrix.quick_start }}
-      - name: Upload Release Asset
-        id: upload-release-asset 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ./${{ matrix.asset_name }}.zip
-          asset_name: ${{ matrix.asset_name }}.zip
-          asset_content_type: application/zip
-  build-tauri:
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            is_draft=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$GITHUB_REF_NAME" --jq .draft)
+            test "$is_draft" = "true"
+          else
+            gh release create "$GITHUB_REF_NAME" \
+              --draft \
+              --generate-notes \
+              --title "Release $GITHUB_REF_NAME" \
+              --verify-tag
+          fi
+          release_id=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$GITHUB_REF_NAME" --jq .id)
+          echo "id=$release_id" >> "$GITHUB_OUTPUT"
+
+  build-cli:
+    name: CLI (${{ matrix.target }})
+    needs: prepare
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.platform }}
-    needs: release
-    defaults:
-      run:
-        shell: bash
+        include:
+          - target: x86_64-unknown-linux-gnu
+            artifact_name: halberdcli
+            asset_name: halberd-x86_64-unknown-linux-gnu
+            quick_start: quick_halberd.sh
+          - target: x86_64-pc-windows-gnu
+            artifact_name: halberdcli.exe
+            asset_name: halberd-x86_64-pc-windows-gnu
+            quick_start: quick_halberd.bat
     steps:
-    - uses: actions/checkout@v3
-    - name: setup node
-      uses: actions/setup-node@v1
-      with:
-        node-version: 16
-    - name: install Rust stable
-      uses: dtolnay/rust-toolchain@stable
-    - name: install dependencies (ubuntu only)
-      if: matrix.platform == 'ubuntu-latest'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
-    - name: install app dependencies and build it
-      run: cd halberd_gui && yarn && yarn build
-    - name: view needs.release.outputs.release_id
-      run: echo ${{ needs.release.outputs.release_id }}
-    - uses: tauri-apps/tauri-action@v0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        releaseId: ${{ needs.release.outputs.release_id }}
-        projectPath: ./halberd_gui
+      - uses: actions/checkout@v6
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Install cross
+        run: cargo install cross --locked --version 0.2.5
+      - name: Build CLI
+        run: cross build --release --target ${{ matrix.target }} --package halberdcli
+      - name: Package CLI
+        run: |
+          cp "target/${{ matrix.target }}/release/${{ matrix.artifact_name }}" ./
+          cp "scripts/${{ matrix.quick_start }}" ./
+          zip "${{ matrix.asset_name }}.zip" \
+            "${{ matrix.artifact_name }}" \
+            README.md \
+            "${{ matrix.quick_start }}"
+      - name: Upload CLI asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" "${{ matrix.asset_name }}.zip" --clobber
+
+  build-tauri:
+    name: Tauri (${{ matrix.name }})
+    needs: prepare
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS Apple Silicon
+            platform: macos-latest
+            args: --target aarch64-apple-darwin
+            rust_targets: aarch64-apple-darwin,x86_64-apple-darwin
+          - name: macOS Intel
+            platform: macos-latest
+            args: --target x86_64-apple-darwin
+            rust_targets: aarch64-apple-darwin,x86_64-apple-darwin
+          - name: Linux x86_64
+            platform: ubuntu-22.04
+            args: ""
+            rust_targets: ""
+          - name: Windows x86_64
+            platform: windows-latest
+            args: ""
+            rust_targets: ""
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: yarn
+          cache-dependency-path: halberd_gui/yarn.lock
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          target: ${{ matrix.rust_targets }}
+      - name: Install Tauri dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf
+      - name: Enable Corepack
+        working-directory: halberd_gui
+        run: corepack enable
+      - name: Install GUI dependencies
+        working-directory: halberd_gui
+        run: yarn install --frozen-lockfile
+      - name: Build and upload Tauri app
+        uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          projectPath: halberd_gui
+          releaseId: ${{ needs.prepare.outputs.release_id }}
+          tagName: ${{ github.ref_name }}
+          releaseDraft: true
+          args: ${{ matrix.args }}
+
+  publish:
+    name: Publish release
+    needs:
+      - build-cli
+      - build-tauri
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Publish draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release edit "$GITHUB_REF_NAME" --draft=false

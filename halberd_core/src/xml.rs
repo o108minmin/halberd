@@ -97,10 +97,9 @@ pub fn output_xml<W: Write>(
 
     // 字幕
     let mut cursor = Duration::milliseconds(0);
-    let mut counter = 1;
-    for i in vec.iter() {
+    for (counter, i) in (1..).zip(vec.iter()) {
         let offset = format!("{}/1000s", (cursor.as_seconds_f64() * 1000.0) as i64);
-        let name = format!("{}", counter);
+        let name = format!("{counter}");
         let duration = format!("{}/1000s", (i.duration.as_seconds_f64() * 1000.0) as i64);
         let title_s = XmlEvent::start_element("title")
             .attr("ref", "r2")
@@ -146,7 +145,6 @@ pub fn output_xml<W: Write>(
                 "invalid duration: duration must be positive".into(),
             )));
         }
-        counter += 1;
     }
 
     let spine_e = XmlEvent::end_element();
@@ -176,11 +174,10 @@ mod tests {
     // 不正な値(負の値)が入る
     fn error_xml_invalid_duration() {
         let mut buf = Vec::<u8>::new();
-        let mut input = Vec::<UnitSubRip>::new();
-        input.push(UnitSubRip {
+        let input = vec![UnitSubRip {
             duration: time::Duration::seconds(-1),
             serif: String::from("negative duration"),
-        });
+        }];
         assert!(
             output_xml(&mut buf, input, false, "event".to_string()).is_err(),
             "invalid duration: duration must be positive"

@@ -89,9 +89,9 @@ fn main() {
             output: handle,
             use_timestamp: matches.get_flag("use-timestamp"),
         };
-        info!("{:?}", config);
+        info!("{config:?}");
         run(&mut config).unwrap_or_else(|err| {
-            error!("Problem running halberd: {}", err);
+            error!("Problem running halberd: {err}");
             process::exit(1);
         });
     } else {
@@ -107,7 +107,7 @@ fn main() {
             outfile = dir_name.to_os_string().into_string().unwrap() + "." + &format;
         }
         let handle = fs::File::create(outfile).unwrap_or_else(|err| {
-            error!("Problem can't open file: {}", err);
+            error!("Problem can't open file: {err}");
             process::exit(1);
         });
         let mut config = config::Config {
@@ -117,9 +117,9 @@ fn main() {
             output: handle,
             use_timestamp: matches.get_flag("use-timestamp"),
         };
-        info!("{:?}", config);
+        info!("{config:?}");
         run(&mut config).unwrap_or_else(|err| {
-            error!("Problem running halberd: {}", err);
+            error!("Problem running halberd: {err}");
             process::exit(1);
         });
     }

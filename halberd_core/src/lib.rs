@@ -33,9 +33,9 @@ impl fmt::Display for HalberdError {
 /// Configを元にhalberdを実行する
 pub fn run<W: Write>(config: &mut config::Config<W>) -> Result<(), Box<dyn Error>> {
     info!("start halberd");
-    info!("input TTS: {}", &config.tts);
+    info!("input TTS: {}", config.tts);
     let swtp = service::select_tts_talk(&config.tts)?;
-    info!("input directory: {}", &config.dirname);
+    info!("input directory: {}", config.dirname);
     let dir = fs::read_dir(&config.dirname);
     let dir = match dir {
         Ok(dir) => dir,
@@ -48,15 +48,13 @@ pub fn run<W: Write>(config: &mut config::Config<W>) -> Result<(), Box<dyn Error
     info!("exec setup");
     swtp.setup(PathBuf::from(&config.dirname))?;
 
-    info!("format: {}", &config.format);
+    info!("format: {}", config.format);
     let mut sub_rips = vec![];
     let mut txts: Vec<std::path::PathBuf> = Vec::new();
     for entry in dir {
         let path = entry.unwrap().path();
-        if let Some(extension) = path.extension() {
-            if extension == "txt" {
-                txts.push(path);
-            }
+        if path.extension().is_some_and(|extension| extension == "txt") {
+            txts.push(path);
         }
     }
     txts.sort();

@@ -20,13 +20,14 @@ impl Error for TextError {}
 
 /// 引数pathと同じ名前のtxtファイル(utf-8)の中身を読む
 /// * `path` - 対象のファイル
+///
 /// ok path = "01.wav" かつ 01.txtが存在する
 pub fn generate_subtitle_from_same_name_txt(path: PathBuf) -> Result<String, Box<dyn Error>> {
     info!("Genarate subtitle from txt file");
-    info!("input path: {}", &path.to_str().unwrap());
+    info!("input path: {}", path.to_str().unwrap());
     let mut text_path = path;
     text_path.set_extension("txt");
-    info!("Open {}", &text_path.to_str().unwrap());
+    info!("Open {}", text_path.to_str().unwrap());
     let rawtxt = match fs::read(text_path.as_path()) {
         Ok(s) => s,
         Err(_) => return Err(Box::new(TextError("can't open txt file".into()))),
@@ -40,12 +41,12 @@ pub fn generate_subtitle_from_same_name_txt(path: PathBuf) -> Result<String, Box
 /// * `path` - 対象のファイル
 pub fn generate_subtitle_from_txt(path: PathBuf) -> Result<String, Box<dyn Error>> {
     info!("Genarate subtitle from txt file");
-    info!("input path: {}", &path.to_str().unwrap());
+    info!("input path: {}", path.to_str().unwrap());
     let rawtxt = match fs::read(path.as_path()) {
         Ok(s) => s,
         Err(_) => return Err(Box::new(TextError("can't open txt file".into()))),
     };
-    info!("raw text: {:?}", &rawtxt);
+    info!("raw text: {:?}", rawtxt);
     let (res, _, _) = UTF_8.decode(&rawtxt);
     let ans = res.into_owned();
     Ok(ans)
@@ -53,15 +54,16 @@ pub fn generate_subtitle_from_txt(path: PathBuf) -> Result<String, Box<dyn Error
 
 /// 引数pathと同じ名前のtxtファイル(Shift_JIS))の中身を読む
 /// * `path` - 対象のファイル
+///
 /// ok path = "01.wav" かつ 01.txtが存在する
 pub fn generate_subtitle_from_same_name_txt_shift_jis(
     path: PathBuf,
 ) -> Result<String, Box<dyn Error>> {
     info!("Genarate subtitle from Shift_JIS txt file");
-    info!("input path: {}", &path.to_str().unwrap());
+    info!("input path: {}", path.to_str().unwrap());
     let mut text_path = path;
     text_path.set_extension("txt");
-    info!("Open {}", &text_path.to_str().unwrap());
+    info!("Open {}", text_path.to_str().unwrap());
     let rawtxt = match fs::read(text_path.as_path()) {
         Ok(s) => s,
         Err(_) => return Err(Box::new(TextError("can't open txt file".into()))),
@@ -76,7 +78,7 @@ pub fn generate_subtitle_from_same_name_txt_shift_jis(
 /// * `path` - 対象のファイル
 pub fn generate_subtitle_from_txt_shift_jis(path: PathBuf) -> Result<String, Box<dyn Error>> {
     info!("Genarate subtitle from Shift_JIS txt file");
-    info!("input path: {}", &path.to_str().unwrap());
+    info!("input path: {}", path.to_str().unwrap());
     let rawtxt = match fs::read(path.as_path()) {
         Ok(s) => s,
         Err(_) => return Err(Box::new(TextError("can't open txt file".into()))),
@@ -89,15 +91,16 @@ pub fn generate_subtitle_from_txt_shift_jis(path: PathBuf) -> Result<String, Box
 
 /// 引数pathと同じ名前のtxtファイル(UTF-16 LE))の中身を読む
 /// * `path` - 対象のファイル
+///
 /// ok path = "01.wav" かつ 01.txtが存在する
 pub fn generate_subtitle_from_same_name_txt_utf_16le(
     path: PathBuf,
 ) -> Result<String, Box<dyn Error>> {
     info!("Genarate subtitle from UTF_16LE txt file");
-    info!("input path: {}", &path.to_str().unwrap());
+    info!("input path: {}", path.to_str().unwrap());
     let mut text_path = path;
     text_path.set_extension("txt");
-    info!("Open {}", &text_path.to_str().unwrap());
+    info!("Open {}", text_path.to_str().unwrap());
     let rawtxt = match fs::read(text_path.as_path()) {
         Ok(s) => s,
         Err(_) => return Err(Box::new(TextError("can't open txt file".into()))),
@@ -111,7 +114,7 @@ pub fn generate_subtitle_from_same_name_txt_utf_16le(
 /// * `path` - 対象のファイル
 pub fn generate_subtitle_from_txt_utf_16le(path: PathBuf) -> Result<String, Box<dyn Error>> {
     info!("Genarate subtitle from UTF_16LE txt file");
-    info!("input path: {}", &path.to_str().unwrap());
+    info!("input path: {}", path.to_str().unwrap());
     let rawtxt = match fs::read(path.as_path()) {
         Ok(s) => s,
         Err(_) => return Err(Box::new(TextError("can't open txt file".into()))),
@@ -136,7 +139,7 @@ mod tests {
         let input_text = dir.path().join("test.txt");
         let mut file = File::create(&input_text).unwrap();
         let expected = "test for generate_subtitle_from_same_name_txt";
-        write!(file, "{}", &expected).unwrap();
+        write!(file, "{}", expected).unwrap();
         let result = generate_subtitle_from_same_name_txt(input);
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), expected);
@@ -160,7 +163,7 @@ mod tests {
         let input = dir.path().join("test.txt");
         let mut file = File::create(&input).unwrap();
         let expected = "test for generate_subtitle_name_txt";
-        write!(file, "{}", &expected).unwrap();
+        write!(file, "{}", expected).unwrap();
         let result = generate_subtitle_from_txt(input);
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), expected);
@@ -184,8 +187,8 @@ mod tests {
         let input = dir.path().join("test.txt");
         let mut file = File::create(&input).unwrap();
         let expected = "test for generate_subtitle_from_same_name_txt_shift_jis";
-        let (expected_shift_jis, _, _) = SHIFT_JIS.encode(&expected);
-        file.write_all(&expected_shift_jis.into_owned()).unwrap();
+        let (expected_shift_jis, _, _) = SHIFT_JIS.encode(expected);
+        file.write_all(expected_shift_jis.as_ref()).unwrap();
         let result = generate_subtitle_from_same_name_txt_shift_jis(input);
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), expected);
@@ -201,8 +204,8 @@ mod tests {
         let input = dir.path().join("test.txt");
         let mut file = File::create(&input).unwrap();
         let expected = "テスト";
-        let (expected_shift_jis, _, _) = SHIFT_JIS.encode(&expected);
-        file.write_all(&expected_shift_jis.into_owned()).unwrap();
+        let (expected_shift_jis, _, _) = SHIFT_JIS.encode(expected);
+        file.write_all(expected_shift_jis.as_ref()).unwrap();
         let result = generate_subtitle_from_same_name_txt_shift_jis(input);
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), expected);
@@ -218,7 +221,7 @@ mod tests {
         let input = dir.path().join("test.txt");
         let mut file = File::create(&input).unwrap();
         let expected = "test for generate_subtitle_from_same_name_txt_shift_jis_unicode";
-        write!(file, "{}", &expected).unwrap();
+        write!(file, "{}", expected).unwrap();
         let result = generate_subtitle_from_same_name_txt_shift_jis(input);
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), expected);
@@ -234,7 +237,7 @@ mod tests {
         let input = dir.path().join("test.txt");
         let mut file = File::create(&input).unwrap();
         let mb = "テスト";
-        write!(file, "{}", &mb).unwrap();
+        write!(file, "{}", mb).unwrap();
         let result = generate_subtitle_from_same_name_txt_shift_jis(input);
         assert!(result.is_ok());
         let expected = "繝�せ繝�";
@@ -259,8 +262,8 @@ mod tests {
         let input = dir.path().join("test.txt");
         let mut file = File::create(&input).unwrap();
         let expected = "test for generate_subtitle_from_txt_shift_jis";
-        let (expected_shift_jis, _, _) = SHIFT_JIS.encode(&expected);
-        file.write_all(&expected_shift_jis.into_owned()).unwrap();
+        let (expected_shift_jis, _, _) = SHIFT_JIS.encode(expected);
+        file.write_all(expected_shift_jis.as_ref()).unwrap();
         let result = generate_subtitle_from_txt_shift_jis(input);
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), expected);
@@ -276,8 +279,8 @@ mod tests {
         let input = dir.path().join("test.txt");
         let mut file = File::create(&input).unwrap();
         let expected = "テスト";
-        let (expected_shift_jis, _, _) = SHIFT_JIS.encode(&expected);
-        file.write_all(&expected_shift_jis.into_owned()).unwrap();
+        let (expected_shift_jis, _, _) = SHIFT_JIS.encode(expected);
+        file.write_all(expected_shift_jis.as_ref()).unwrap();
         let result = generate_subtitle_from_txt_shift_jis(input);
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), expected);
@@ -293,7 +296,7 @@ mod tests {
         let input = dir.path().join("test.txt");
         let mut file = File::create(&input).unwrap();
         let expected = "test for generate_subtitle_from_txt_shift_jis_unicode";
-        write!(file, "{}", &expected).unwrap();
+        write!(file, "{}", expected).unwrap();
         let result = generate_subtitle_from_txt_shift_jis(input);
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), expected);
@@ -309,7 +312,7 @@ mod tests {
         let input = dir.path().join("test.txt");
         let mut file = File::create(&input).unwrap();
         let mb = "テスト";
-        write!(file, "{}", &mb).unwrap();
+        write!(file, "{}", mb).unwrap();
         let result = generate_subtitle_from_txt_shift_jis(input);
         assert!(result.is_ok());
         let expected = "繝�せ繝�";

@@ -41,7 +41,7 @@
   },
   "productName": "halberd-gui",
   "mainBinaryName": "halberd-gui",
-  "version": "2.1.0",
+  "version": "../package.json",
   "identifier": "com.github.o108minmin.halberd",
   "plugins": {},
   "app": {

@@ -1,21 +1,40 @@
-on: [push]
-
 name: Lint
 
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  check:
-    name: Run cargo check clippy
-    runs-on: ubuntu-latest
+  rust:
+    name: Rustfmt and Clippy
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          toolchain: stable
           components: rustfmt, clippy
-      - name: install dependencies (ubuntu only)
+      - name: Install Tauri dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
-      - name: Rustfmt Check
-        uses: actions-rust-lang/rustfmt@v1
-      - run: cargo clippy --workspace --exclude halberd_gui
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+      - name: Run Clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings

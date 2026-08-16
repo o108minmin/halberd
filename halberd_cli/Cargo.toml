@@ -1,8 +1,8 @@
 [package]
 name = "halberdcli"
-version = "3.0.0"
-edition = "2024"
-rust-version = "1.85"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
 authors = [
 	"o108minmin <o108minmin@gmail.com>",
 ]

@@ -6,3 +6,8 @@ members = [
     "halberd_cli",
     "halberd_gui/src-tauri",
 ]
+
+[workspace.package]
+version = "3.0.0"
+edition = "2024"
+rust-version = "1.88"
