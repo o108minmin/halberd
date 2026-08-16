@@ -1,10 +1,9 @@
 //! srtファイル関係のモジュール
-use std::boxed::Box;
 use std::error::Error;
 use std::fmt;
 use std::io::Write;
-use std::result::Result;
 
+use log::{debug, info};
 use time::Duration;
 use time::macros::format_description;
 
@@ -22,6 +21,10 @@ impl fmt::Display for SrtError {
 }
 
 /// 引数wに対して、vecをsrtファイルとして出力する
+///
+/// # Errors
+///
+/// 出力先への書き込み、時刻の整形、または字幕の表示時間が正でない場合にエラーを返します。
 pub fn output_srt<W: Write>(w: &mut W, vec: Vec<UnitSubRip>) -> Result<(), Box<dyn Error>> {
     let mut cursor = time::Time::MIDNIGHT;
     let formatting = format_description!("[hour]:[minute]:[second],[subsecond digits:3]");

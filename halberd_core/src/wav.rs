@@ -1,8 +1,8 @@
 //! wavファイル関係のモジュール
-use std::boxed::Box;
 use std::fmt;
 use std::{error::Error, path::PathBuf};
 
+use log::debug;
 #[derive(Debug)]
 struct WavError(String);
 
@@ -16,6 +16,10 @@ impl Error for WavError {}
 
 /// wavファイルの秒数を計算する
 /// * `reader` - 秒数を計算したいhoundのwav reader.
+///
+/// # Errors
+///
+/// WAVファイルを開けない場合にエラーを返します。
 pub fn calculate_wave_seconds(path: PathBuf) -> Result<f64, Box<dyn Error>> {
     let reader = match hound::WavReader::open(path) {
         Ok(f) => f,

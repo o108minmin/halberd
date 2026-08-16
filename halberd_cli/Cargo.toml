@@ -9,6 +9,9 @@ authors = [
 description = "Generate Text To Speech Software Subtitle"
 repository = "https://github.com/o108minmin/halberd"
 
+[lints]
+workspace = true
+
 [dependencies]
 clap = "4.6.6"
 log = "0.4.33"
