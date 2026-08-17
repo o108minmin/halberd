@@ -50,27 +50,35 @@ jobs:
   build-cli:
     name: CLI (${{ matrix.target }})
     needs: prepare
-    runs-on: ubuntu-24.04
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - target: x86_64-unknown-linux-gnu
+          - runner: ubuntu-24.04
+            target: x86_64-unknown-linux-gnu
             artifact_name: halberdcli
             asset_name: halberd-x86_64-unknown-linux-gnu
             quick_start: quick_halberd.sh
-          - target: x86_64-pc-windows-gnu
+          - runner: windows-latest
+            target: x86_64-pc-windows-msvc
             artifact_name: halberdcli.exe
-            asset_name: halberd-x86_64-pc-windows-gnu
+            asset_name: halberd-x86_64-pc-windows-msvc
             quick_start: quick_halberd.bat
     steps:
       - uses: actions/checkout@v6
       - uses: actions-rust-lang/setup-rust-toolchain@v1
-      - name: Install cross
+      - name: Install Cross
+        if: runner.os == 'Linux'
         run: cargo install cross --locked --version 0.2.5
-      - name: Build CLI
+      - name: Build CLI for Linux
+        if: runner.os == 'Linux'
         run: cross build --release --target ${{ matrix.target }} --package halberdcli
-      - name: Package CLI
+      - name: Build CLI for Windows
+        if: runner.os == 'Windows'
+        run: cargo build --release --package halberdcli
+      - name: Package Linux CLI
+        if: runner.os == 'Linux'
         run: |
           cp "target/${{ matrix.target }}/release/${{ matrix.artifact_name }}" ./
           cp "scripts/${{ matrix.quick_start }}" ./
@@ -78,10 +86,17 @@ jobs:
             "${{ matrix.artifact_name }}" \
             README.md \
             "${{ matrix.quick_start }}"
+      - name: Package Windows CLI
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Copy-Item "target/release/${{ matrix.artifact_name }}" .
+          Copy-Item "scripts/${{ matrix.quick_start }}" .
+          Compress-Archive -Force -Path "${{ matrix.artifact_name }}", README.md, "${{ matrix.quick_start }}" -DestinationPath "${{ matrix.asset_name }}.zip"
       - name: Upload CLI asset
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "$GITHUB_REF_NAME" "${{ matrix.asset_name }}.zip" --clobber
+        run: gh release upload "${{ github.ref_name }}" "${{ matrix.asset_name }}.zip" --clobber
 
   build-tauri:
     name: Tauri (${{ matrix.name }})

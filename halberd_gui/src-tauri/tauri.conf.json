@@ -29,7 +29,7 @@
       "exceptionDomain": "",
       "frameworks": [],
       "providerShortName": null,
-      "signingIdentity": null
+      "signingIdentity": "-"
     },
     "resources": [],
     "shortDescription": "Subtitle Generator for TTS",
