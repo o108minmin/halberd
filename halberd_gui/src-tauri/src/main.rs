@@ -8,34 +8,36 @@ use halberd_core::config::Config;
 use halberd_core::run;
 use log::LevelFilter;
 use std::fs;
+use std::path::Path;
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
+// Learn more about Tauri commands at https://v2.tauri.app/develop/calling-rust/
 #[tauri::command]
-fn halberd_run(input: &str, output: &str, tts: &str) -> String {
-    let handle = fs::File::create(output).unwrap();
+fn halberd_run(input: &str, output: &str, tts: &str) -> Result<String, String> {
+    let handle = fs::File::create(output)
+        .map_err(|error| format!("出力ファイルを作成できませんでした: {error}"))?;
+    let format = Path::new(output)
+        .extension()
+        .and_then(|extension| extension.to_str())
+        .ok_or_else(|| "出力ファイルの形式を判定できませんでした".to_string())?;
     let mut config = Config {
         tts: tts.to_string(),
         dirname: input.to_string(),
-        format: parse_output_extension(output),
+        format: format.to_string(),
         output: handle,
         // FIXME: macで動かないので一時的に停止
         use_timestamp: false,
     };
-    match run(&mut config) {
-        Ok(_) => format!("done input: {}", input),
-        Err(e) => format!("error: {}", e),
-    }
-}
-
-fn parse_output_extension(output: &str) -> String {
-    let v: Vec<&str> = output.split('.').collect();
-    v[v.len() - 1].to_string()
+    run(&mut config).map_err(|error| error.to_string())?;
+    Ok(format!("保存しました: {output}"))
 }
 
 fn main() {
     let mut builder = Builder::from_default_env();
     builder.filter_level(LevelFilter::Debug).init();
     tauri::Builder::default()
+        .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![halberd_run])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

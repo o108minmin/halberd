@@ -1,4 +1,6 @@
 //! TTS関係の雑多な関数
+use log::info;
+
 use crate::tts::aivoice::Aivoice;
 use crate::tts::cevioai::Cevioai;
 use crate::tts::coefont::CoeFont;
@@ -11,8 +13,12 @@ use crate::tts::voicevox::Voicevox;
 
 /// profile_nameから対応するTTSを選択する
 /// * `profile_name` - TTSの名前
+///
+/// # Errors
+///
+/// 未対応のTTS名が指定された場合にエラーを返します。
 pub fn select_tts_talk(profile_name: &str) -> Result<Box<dyn profile::TTS>, &'static str> {
-    info!("input profile_name: {}", profile_name);
+    info!("input profile_name: {profile_name}");
     match profile_name {
         "voiceroid" => Ok(Box::new(Voiceroid {})),
         "coefont" => Ok(Box::new(CoeFont {})),

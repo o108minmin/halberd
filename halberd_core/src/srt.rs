@@ -1,12 +1,11 @@
 //! srtファイル関係のモジュール
-use std::boxed::Box;
 use std::error::Error;
 use std::fmt;
 use std::io::Write;
-use std::result::Result;
 
-use time::macros::format_description;
+use log::{debug, info};
 use time::Duration;
+use time::macros::format_description;
 
 use crate::unitsubrip::UnitSubRip;
 
@@ -22,18 +21,21 @@ impl fmt::Display for SrtError {
 }
 
 /// 引数wに対して、vecをsrtファイルとして出力する
+///
+/// # Errors
+///
+/// 出力先への書き込み、時刻の整形、または字幕の表示時間が正でない場合にエラーを返します。
 pub fn output_srt<W: Write>(w: &mut W, vec: Vec<UnitSubRip>) -> Result<(), Box<dyn Error>> {
     let mut cursor = time::Time::MIDNIGHT;
-    let mut counter = 1;
     let formatting = format_description!("[hour]:[minute]:[second],[subsecond digits:3]");
     info!("Print UnitSubRips");
     debug!("input vec length: {}", vec.len());
-    for i in vec.iter() {
+    for (counter, i) in (1..).zip(vec.iter()) {
         let start_cursol = cursor.format(formatting)?;
         let end_cursol = (cursor + i.duration).format(formatting)?;
-        info!("{}", i);
-        writeln!(w, "{}", counter)?;
-        writeln!(w, "{} --> {}", start_cursol, end_cursol)?;
+        info!("{i}");
+        writeln!(w, "{counter}")?;
+        writeln!(w, "{start_cursol} --> {end_cursol}")?;
         writeln!(w, "{}", i.serif)?;
         writeln!(w)?;
         if i.duration > time::Duration::ZERO {
@@ -43,7 +45,6 @@ pub fn output_srt<W: Write>(w: &mut W, vec: Vec<UnitSubRip>) -> Result<(), Box<d
                 "invalid duration: duration must be positive".into(),
             )));
         }
-        counter += 1;
         cursor += Duration::milliseconds(1);
     }
     w.flush()?;
@@ -57,11 +58,10 @@ mod tests {
     // 入力値が正常だったとき
     fn normal_output_srt() {
         let mut buf = Vec::<u8>::new();
-        let mut input = Vec::<UnitSubRip>::new();
-        input.push(UnitSubRip {
+        let input = vec![UnitSubRip {
             duration: time::Duration::seconds(1),
             serif: String::from("say"),
-        });
+        }];
         let expected = b"1\n00:00:00,000 --> 00:00:01,000\nsay\n\n";
         let result = output_srt(&mut buf, input);
         assert!(result.is_ok());
@@ -72,11 +72,10 @@ mod tests {
     // 不正な値(負の値)が入る
     fn error_invalid_duration() {
         let mut buf = Vec::<u8>::new();
-        let mut input = Vec::<UnitSubRip>::new();
-        input.push(UnitSubRip {
+        let input = vec![UnitSubRip {
             duration: time::Duration::seconds(-1),
             serif: String::from("negative duration"),
-        });
+        }];
         assert!(
             output_srt(&mut buf, input).is_err(),
             "invalid duration: duration must be positive"

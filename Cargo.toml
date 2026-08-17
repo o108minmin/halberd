@@ -1,7 +1,16 @@
 [workspace]
+resolver = "3"
 
 members = [
     "halberd_core",
     "halberd_cli",
     "halberd_gui/src-tauri",
 ]
+
+[workspace.package]
+version = "3.0.0"
+edition = "2024"
+rust-version = "1.88"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"

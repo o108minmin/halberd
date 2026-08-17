@@ -1,19 +1,23 @@
 [package]
 name = "halberd_core"
-version = "2.1.0"
-edition = "2021"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
 authors = [
 	"o108minmin <o108minmin@gmail.com>",
 ]
 description = "Generate Text To Speech Software Subtitle"
 repository = "https://github.com/o108minmin/halberd"
 
+[lints]
+workspace = true
+
 [dependencies]
-encoding_rs = "0.8.31"
-hound = "3.4.0"
-log = "0.4.16"
-xml-rs = "0.8"
-time = {version = "0.3.15", features = ["macros", "formatting", "local-offset"]}
+encoding_rs = "0.8.35"
+hound = "3.5.1"
+log = "0.4.33"
+xml-rs = "0.8.29"
+time = { version = "0.3.55", features = ["macros", "formatting", "local-offset"] }
 
 [dev-dependencies]
-tempfile = "3"
+tempfile = "3.27.0"

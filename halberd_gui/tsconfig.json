@@ -11,6 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
     "moduleResolution": "Node",
+    "types": ["vitest/globals", "@testing-library/jest-dom"],
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,

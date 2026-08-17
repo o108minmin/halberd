@@ -1,15 +1,13 @@
 use clap::Arg;
 use clap::ArgAction;
+use clap::ArgMatches;
 use env_logger::Builder;
 use halberd_core::{config, run};
-use log::LevelFilter;
+use log::{LevelFilter, error, info};
 use std::fs;
 use std::io::stdout;
 use std::path::Path;
 use std::process;
-
-#[macro_use]
-extern crate log;
 
 /// cli gatewayとしてのmain関数
 fn main() {
@@ -78,49 +76,56 @@ fn main() {
     info!("enable debug mode: {}", matches.get_flag("debug"));
     info!("build config");
 
-    let mut outfile = matches.get_one::<String>("outfile").unwrap().to_string();
+    let mut outfile = value(&matches, "outfile").to_owned();
     if outfile == "stdout" {
         let out = stdout();
         let handle = out.lock();
         let mut config = config::Config {
-            tts: matches.get_one::<String>("TTS").unwrap().to_string(),
-            dirname: matches.get_one::<String>("INPUT").unwrap().to_string(),
-            format: matches.get_one::<String>("format").unwrap().to_string(),
+            tts: value(&matches, "TTS").to_owned(),
+            dirname: value(&matches, "INPUT").to_owned(),
+            format: value(&matches, "format").to_owned(),
             output: handle,
             use_timestamp: matches.get_flag("use-timestamp"),
         };
-        info!("{:?}", config);
+        info!("{config:?}");
         run(&mut config).unwrap_or_else(|err| {
-            error!("Problem running halberd: {}", err);
+            error!("Problem running halberd: {err}");
             process::exit(1);
         });
     } else {
         if outfile == "dirname" {
             // ファイル名にディレクトリ名を使用する指定があった場合
-            let fullpath = matches.get_one::<String>("INPUT").unwrap().to_string();
-            let path = Path::new(&fullpath);
-            let dir_name = match path.file_name() {
-                None => panic!("Problem converting directory name"),
-                Some(s) => s,
+            let fullpath = value(&matches, "INPUT");
+            let path = Path::new(fullpath);
+            let Some(dir_name) = path.file_name() else {
+                error!("Problem converting directory name");
+                process::exit(1);
             };
-            let format = matches.get_one::<String>("format").unwrap().to_string();
-            outfile = dir_name.to_os_string().into_string().unwrap() + "." + &format;
+            let format = value(&matches, "format");
+            outfile = format!("{}.{}", dir_name.to_string_lossy(), format);
         }
         let handle = fs::File::create(outfile).unwrap_or_else(|err| {
-            error!("Problem can't open file: {}", err);
+            error!("Problem can't open file: {err}");
             process::exit(1);
         });
         let mut config = config::Config {
-            tts: matches.get_one::<String>("TTS").unwrap().to_string(),
-            dirname: matches.get_one::<String>("INPUT").unwrap().to_string(),
-            format: matches.get_one::<String>("format").unwrap().to_string(),
+            tts: value(&matches, "TTS").to_owned(),
+            dirname: value(&matches, "INPUT").to_owned(),
+            format: value(&matches, "format").to_owned(),
             output: handle,
             use_timestamp: matches.get_flag("use-timestamp"),
         };
-        info!("{:?}", config);
+        info!("{config:?}");
         run(&mut config).unwrap_or_else(|err| {
-            error!("Problem running halberd: {}", err);
+            error!("Problem running halberd: {err}");
             process::exit(1);
         });
     }
+}
+
+fn value<'a>(matches: &'a ArgMatches, name: &str) -> &'a str {
+    matches
+        .get_one::<String>(name)
+        .map(String::as_str)
+        .expect("clap must supply required arguments and arguments with defaults")
 }
