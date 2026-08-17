@@ -34,8 +34,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            is_draft=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$GITHUB_REF_NAME" --jq .draft)
+          if gh release view "$GITHUB_REF_NAME" --json databaseId,isDraft >/dev/null 2>&1; then
+            is_draft=$(gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft)
             test "$is_draft" = "true"
           else
             gh release create "$GITHUB_REF_NAME" \
@@ -44,7 +44,7 @@ jobs:
               --title "Release $GITHUB_REF_NAME" \
               --verify-tag
           fi
-          release_id=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$GITHUB_REF_NAME" --jq .id)
+          release_id=$(gh release view "$GITHUB_REF_NAME" --json databaseId --jq .databaseId)
           echo "id=$release_id" >> "$GITHUB_OUTPUT"
 
   build-cli:
